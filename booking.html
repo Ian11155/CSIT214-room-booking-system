@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+         .left-panel {
+            width: 40vw;
+            height: 100vh;
+            background: #001540; 
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+       .left-logo-image {
+            width: 80%;
+            height: 60%;
+            background-image: url('uow.jpg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        .right-panel {
+            margin-left: 40vw;
+            width: 60vw;
+            height: 100vh;
+            background: #f5f6fa; 
+            display: flex;
+            justify-content: center;  
+            align-items: center; 
+        }
+        .inner-box {
+            width: 75%;
+            height: 80%;
+            padding-top: 180px;
+            
+        }
+        .inner-box h1{
+            font-size: 20px;
+            font-family: sans-serif;
+        }
+        .text-field {
+            width: 80%;
+            height: 40px;
+            font-size: 18px;
+            padding: 8px;
+            box-sizing: border-box;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            margin-bottom: 20px; 
+        }
+        .password-field {
+            width: 80%;
+            height: 40px;
+            font-size: 18px;
+            padding: 8px;
+            box-sizing: border-box;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+        }
+        .role-field {
+            width: 20%;
+            height: 30px;
+            font-size: 13px;
+            box-sizing: border-box;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+            background: #fff;
+        }
+        #continue-btn {
+            margin-top: 20px;
+            width: 80%;
+            height: 40px;
+            background: #000;
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        #continue-btn:hover {
+            background: #222;
+        }
+    </style>
+</head>
+<body>
+    <div class="left-panel">
+        <div class="left-logo-image"></div>
+    </div>
+    <div class="right-panel">
+        <div class="inner-box">
+            <h1>Please enter your username and password.</h1>
+            <br/>
+            <div>Username</div>
+            <input class="text-field" type="text" required>
+            <div>Password</div>
+            <input class="password-field" type="password" required>
+            <div>Login As</div>
+            <select class="role-field" id="role-field">
+                <option value="" disabled selected></option>
+                <option value="student">Student</option>
+                <option value="staff">Staff</option>
+            </select>
+            <br/>
+            <button id="continue-btn" onclick="">Continue</button>
+        </div>
+    </div>
+    <script>
+        document.getElementById("continue-btn").onclick = function() {
+            const role = document.getElementById("role-field").value;
+            if (role === "student") {
+                window.location.href = "student-selected.html";
+            } else if (role === "staff") {
+                window.location.href = "staff-selected.html";
+            } else {
+                alert("Please select a role.");
+            }
+        };
+</script>
+</body>
+</html>

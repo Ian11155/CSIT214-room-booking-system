@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Page</title>
+    <style>
+        .container1 {
+            width: 600px;
+            max-height: 700px;
+            margin-top: 60px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        #uow-logo {
+            width: 200px;
+            height: 150px;
+        }
+        .container1 h2{
+            color: #484848;
+            font-size: 28px;    
+            font-family: sans-serif;
+            margin-left: 40px;
+            margin-top: -30px;
+        }
+        .date-label{
+            margin-left: 40px;
+        }
+        .date-field {
+            width: 80%;
+            height: 40px;
+            font-size: 12px;
+            box-sizing: border-box;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+            margin-left: 40px;
+            cursor: pointer;
+        }
+        .roomType-label{
+            margin-left: 40px;
+        }
+        .roomType-radio {
+            min-height: 100px;
+            max-height: 100px;   
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 4px;
+            background: #fff;
+            width: 80%;
+            margin-left: 40px;
+            box-sizing: border-box;
+        }
+        #timings-container {
+            min-height: 100px;
+            max-height: 100px;   
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 4px;
+            background: #fff;
+            width: 80%;
+            margin-left: 40px;
+            box-sizing: border-box;
+        }
+        .timings-label{
+            margin-left: 40px;
+        }
+        #booking-btn {
+            margin-left: 40px;
+            margin-top: 50px;
+            width: 80%;
+            height: 40px;
+            background: #000;
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        #booking-btn:hover {
+            background: #222;
+        }
+        #alert{
+            visibility: hidden;
+            font-size: 14px;
+            font-family: sans-serif;
+            color: rgb(219, 15, 15);
+            margin-left: 45px;
+        }
+
+        #booking-details-container {
+            margin-left:229px;
+            margin-top:80px;
+        }
+        #booking-details-container h1{
+            color: #000000;
+            font-size: 28px;    
+            font-family: sans-serif;
+        }
+        .delete-btn {
+            margin: 30px 10px;
+            padding: 4px 8px;
+            background: #3f3c3c;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        /* Table css*/
+        /* 1. For Chrome, Safari, and Edge */
+        .table-container-preview::-webkit-scrollbar {
+            -webkit-appearance: none;
+            width: 10px; /* Force a specific width */
+        }
+
+        .table-container-preview::-webkit-scrollbar-track {
+            background: #ffffff; /* Visible track color */
+        }
+
+        .table-container-preview::-webkit-scrollbar-thumb {
+            background-color: #888; /* Visible handle color */
+            border-radius: 5px;
+            border: 2px solid #f1f1f1; /* Creates a padding effect */
+        }
+        .table-container-preview {
+            width: 900px;
+            margin: 20px auto;
+            height: 350px;
+            overflow-y: scroll;
+        }
+        #booking-preview-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'Segoe UI', sans-serif;
+            color: #161515; /* White text */
+        }
+        #booking-preview-table th {
+            color: #a0a0a0; /* Muted gray for headers */
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+            padding: 15px 10px;
+            text-align: left;
+        }
+        #booking-preview-table thead::after {
+            content: "";
+            display: table-row;
+            height: 5px; /* Adjust this for the size of the gap */
+            background-color: transparent;
+        }
+        #booking-preview-table thead th {
+            position: sticky;
+            top: 0;               /* Sticks to the top of the container */
+            z-index: 2;           /* Stays above the body rows */
+            background-color: #ffffff;
+            box-shadow: inset 0 -0.5px 0 #444;
+        }
+        #booking-preview-table #table-preview-body td{
+            margin-top: 60px;
+            padding: 10px 10px 15px;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .table-preview-footer{
+            gap: 1000px;
+            width: 900px;
+            padding-top: 10px;;
+            margin: -15px auto;
+            font-weight: bold;
+            font-size: 18px;
+            font-family: 'Segoe UI', sans-serif;
+            border-top: 0.5px solid #444;;
+        }
+        #grand-total-amount{
+            margin-left: 710px;
+        }
+
+        .promo-container {
+            margin: 26px 276px -10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 200px; 
+            padding: 10px 1px;
+            border: solid 0.6px #9ca3af;
+            border-radius: 12px; /* Rounded corners */
+            background-color: #fff;
+        }
+        #promo-input {
+            flex-grow: 1;
+            width: 0; /* allows the input to shrink below its default size,By default, an <input> has a fixed size attribute (usually around 20 characters)*/
+            border: none;
+            outline: none;
+            font-size: 16px;
+        }
+        #promo-input::placeholder {
+            color: #9ca3af; /* Muted gray placeholder */
+        }
+        #apply-btn {
+            color: #1b1771; /* The purple-ish blue color */
+            font-weight: 600;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-left: 10px;
+            user-select: none;
+        }
+        #apply-btn:hover {
+            color: #4338ca;
+        }
+
+        /* Container 3 */
+        #container3{
+            width: 600px;
+            margin-top: -20px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #filter-container{
+            margin-left: 229px;
+        }
+
+        #table-container-details {
+            border-collapse: collapse;
+            border-radius: 5px;
+            margin-top: 20px;
+            min-width: 1000px;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            
+        }
+        #table-container-details table {
+            width: 100%;
+            table-layout: fixed;
+            max-width: 1000px;
+            border-collapse: collapse;
+            font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #2D3748;
+            font-size: 13px;
+        }
+        #table-container-details th {
+            background-color: #f2f2f2;
+            text-align: left;
+            padding: 10px;
+        }
+        #table-container-details thead th {
+            position: sticky;
+            top: 0;               /* Sticks to the top of the container */
+            z-index: 1;           /* Stays above the body rows */
+        }
+        #table-container-details td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-weight: 200;
+            color: #252525;
+            font-size: 14px;
+            height: 40px;
+        }
+        #table-container-details tr:hover {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container1">
+        <img id="uow-logo"src="uow2.jpg" alt="University of Wollongong Logo">
+        <h2>Book a Room</h2>
+        <div class="date-label">Select a date</div>
+        <input type="date" class="date-field"  onclick="this.showPicker && this.showPicker()"required>
+        
+        <div class="roomType-label">Select room type(s)</div>
+        <div class="roomType-radio" id="roomTypeRadio" style="margin-left:40px;">
+        </div>
+
+        <br>
+        <div class="timings-label">Timing(s)</div>
+        <div id=timings-container>
+
+        </div>
+
+    </div>
+
+    <div class="table-container-preview">
+        <table id="booking-preview-table">
+            <thead>
+                <tr>
+                    <th>Room Type</th>
+                    <th>Date</th>
+                    <th>Timing</th>
+                    <th>Capacity</th>
+                    <th>Promo code</th>
+                    <th>Promo Percentage</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+
+            <tbody id="table-preview-body">
+            </tbody>
+        </table>
+    </div>
+
+    <div class="table-preview-footer">
+        <span>Grand Total</span>
+        <span id="grand-total-amount">$0.00</span>
+    </div>
+
+    <div class="promo-container">
+        <input type="text" id="promo-input" placeholder="Promo code">
+        <span id="apply-btn" onclick="applyPromo()">Apply</span>
+    </div>
+
+    <div id="container3">
+        <button id="booking-btn" onclick="bookingButton()">Book</button>
+    </div>
+    
+    <div id="booking-details-container">
+        <h1>Booking details:</h1>
+    </div>
+
+    <div id="table-container-details">
+        <table>
+            <thead>
+                <tr>
+                    <th>Room Type</th>
+                    <th>Date</th>
+                    <th>Timing</th>
+                    <th>Capacity</th>
+                    <th>Promo code</th>
+                    <th>Promo Percentage</th>
+                    <th>Amount</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="table-details-body">
+            </tbody>
+        </table>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+    // stored format:
+    /*const roomData ={
+                        roomType: listItem.dataset.roomType,
+                        price: listItem.dataset.price,
+                        start: listItem.dataset.start,
+                        end: listItem.dataset.end,
+                        promo: listItem.dataset.promo,
+                        percent: listItem.dataset.percent,
+                        capacity: listItem.dataset.capacity
+                      };
+    */
+    const dateInput = document.querySelector('.date-field');
+    const launchedRooms = JSON.parse(localStorage.getItem('selectedRoom')) || [];
+    
+    const grandTotalAmount = document.getElementById('grand-total-amount');
+    let calculatedTotalAmount = 0
+    
+    // Function to display timings once clicked on a room type radio button
+    function showTimings() {
+        const timingsContainer = document.getElementById('timings-container');
+        timingsContainer.innerHTML = ''; // Clear previous timings
+        const selectedRoomType = document.querySelector('input[name="roomType"]:checked');
+        const startTime = selectedRoomType.dataset.start;
+        const endTime = selectedRoomType.dataset.end;
+        const startDateTime = new Date(startTime);
+        const endDateTime = new Date(endTime);
+ 
+        // Create checkbox for every hour between start and end time
+        for (let time = startDateTime; time < endDateTime; time.setHours(time.getHours() + 1)) {
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.name = 'timing';
+            // Store the formatted time directly ON the element
+            const formattedTime = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); //format:16:00
+            checkbox.dataset.timeStr = formattedTime;
+            const nextHour = new Date(time);
+            nextHour.setHours(nextHour.getHours() + 1);
+            const formattedNextHour = nextHour.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            // Store the ISO string for later use when booking
+            checkbox.value = time.toISOString();
+            // Create label for the checkbox
+            const label = document.createElement('label');
+            label.textContent = " " + formattedTime;
+            // When a timing checkbox is clicked, add the booking details to the booking price list
+            const roomName = selectedRoomType.value;
+            
+            // Check if this specific room/date/time is already booked
+            const currentCombo = `${roomName}-${dateInput.value}-${formattedTime}`;
+
+            if (finalizedBookings.includes(currentCombo)) {
+                checkbox.disabled = true;
+                checkbox.checked = true; // Optional: show it as already selected but locked
+            }
+            
+            checkbox.onclick = function() {
+                const selectedRoomType = document.querySelector('input[name="roomType"]:checked');
+                const price = selectedRoomType.dataset.price;
+                const promo = selectedRoomType.dataset.promo;
+                const percent = selectedRoomType.dataset.percent;
+                const capacity = selectedRoomType.dataset.capacity;
+
+                // If unchecked, remove the corresponding booking price entry(table)
+                if (this.checked === false) {
+                    const tableBody = document.getElementById("table-preview-body")
+                    // search the table and remove the row if all check true
+                    for (let i = 0; i < tableBody.children.length; i++) {
+                        if (tableBody.children[i].textContent.includes(formattedTime) && tableBody.children[i].textContent.includes(formattedNextHour) && tableBody.children[i].textContent.includes(roomName)) {
+                            tableBody.children[i].remove();
+                            // minus price for total amount
+                            if (!percent){
+                                calculatedTotalAmount -= +price
+                            } else{
+                                let calculatedDiscount = (+price / 100) * +percent;
+                                let finalPrice = +price - calculatedDiscount;
+                                calculatedTotalAmount -= finalPrice;
+                            };
+                            if (calculatedTotalAmount < 0) calculatedTotalAmount = 0;
+
+                            calculatedTotalAmount = Math.round(calculatedTotalAmount * 100) / 100
+                            grandTotalAmount.innerHTML = '$' + calculatedTotalAmount.toFixed(2);
+                        }
+                    }
+                    return;
+                }
+                // table stuffs
+                const tableRow = document.createElement("tr")
+                const tableBody = document.getElementById("table-preview-body")
+                tableRow.dataset.promo = promo ? promo : '-' //example output: <tr data-promo="HALF">...</tr>
+                tableRow.dataset.percent = percent ? percent : '-'
+                tableRow.dataset.price = price
+                tableRow.innerHTML = `
+                    <td>${roomName}</td>
+                    <td>${dateInput.value}</td>
+                    <td>${formattedTime} to ${formattedNextHour}</td>
+                    <td>${capacity}</td>
+                    <td class="row-promo-code">-</td>
+                    <td class="row-promo-percent">-%</td>
+                    <td class="row-amount">$${(+price).toFixed(2)}</td>
+                    `
+                tableBody.appendChild(tableRow);
+
+                let Price = +price;
+                calculatedTotalAmount += Price;
+
+                calculatedTotalAmount = Math.round(calculatedTotalAmount * 100) / 100
+                grandTotalAmount.innerHTML = '$' + calculatedTotalAmount.toFixed(2);
+            };
+
+            
+            // Append the checkbox and label to the timings container
+            timingsContainer.appendChild(checkbox);
+            timingsContainer.appendChild(label);
+            const br = document.createElement('br');
+            timingsContainer.appendChild(br);
+        }
+    }
+
+    // On page load, read the launched rooms from localStorage and create checkboxes for them
+    const radioContainer = document.getElementById('roomTypeRadio');
+    // 1. Create a Set to track room types we have already added, *Set automatically removes duplicates for us*
+    const addedTypes = new Set();
+
+    for (let i = 0; i < launchedRooms.length; i++) {
+        const currentType = launchedRooms[i].roomType;
+
+        // 2. Check if we have already seen this room type
+        if (addedTypes.has(currentType)) {
+            continue; // Skip to the next room in the loop
+        }
+        
+        // 3. Add this type to our "seen" list so we don't add it again
+        addedTypes.add(currentType);
+
+        // Create radio button for each launched room
+        const radio = document.createElement('input');
+        radio.type = 'radio';
+        radio.name = 'roomType';
+        radio.value = launchedRooms[i].roomType;
+        radio.id = launchedRooms[i].roomType;
+        // Store additional data as dataset attributes
+        radio.dataset.start = launchedRooms[i].start;
+        radio.dataset.end = launchedRooms[i].end;
+        radio.dataset.price = launchedRooms[i].price;
+        radio.dataset.promo = launchedRooms[i].promo;
+        radio.dataset.percent = launchedRooms[i].percent;
+        radio.dataset.capacity = launchedRooms[i].capacity;
+        // Create label for the radio button
+        const label = document.createElement('label');
+        label.htmlFor = launchedRooms[i].roomType;
+        label.textContent = " " + launchedRooms[i].roomType;
+        // onclick for radio button to show timings
+        radio.onclick = function() {
+            if (dateInput.value) {
+                showTimings();
+            } else {
+                alert('Please select a date first to view available timings for this room type.');
+                radio.checked = false; // Uncheck the radio button since no date is selected
+            }
+        };
+        // Append the radio button and label to the container
+        radioContainer.appendChild(radio);
+        radioContainer.appendChild(label);
+        // Add a line break before each new radio button
+        const br = document.createElement('br');
+        radioContainer.appendChild(br);
+    }
+
+    // Listens for any changes to localStorage made by your Staff page.
+    window.addEventListener('storage', (event) => {
+        if (event.key === 'selectedRoom') {
+            // When 'selectedRoom' is updated in the other tab, reload this one!
+            window.location.reload();
+        }
+    });
+
+    const finalizedBookings = []; // Format: "RoomName-YYYY-MM-DD-10:00 AM"
+
+    // Main booking logic (booking button and after)
+    function bookingButton(){
+        const tablePreviewBody = document.getElementById("table-preview-body");
+        const tableDetailsBody = document.getElementById("table-details-body");
+        const rows = tablePreviewBody.querySelectorAll("tr");
+
+        // append each row individually from table-preview-body(before booking button) to table-details-body(after booking button)
+        rows.forEach(row => {
+            const room = row.cells[0].textContent;
+            const date = row.cells[1].textContent;
+            // Extract the start time (e.g., "10:00 AM") from the timing string "10:00 AM to 11:00 AM"
+            const time = row.cells[2].textContent.split(' to ')[0];
+
+            // Store the unique combination
+            finalizedBookings.push(`${room}-${date}-${time}`);
+
+            const deleteBtn = document.createElement("button")
+            deleteBtn.innerHTML="Delete"
+            deleteBtn.className="delete-btn"
+            deleteBtn.onclick=function(){
+                const row = this.closest('tr');
+                const roomInRow = row.cells[0].textContent;
+                const dateInRow = row.cells[1].textContent;
+                const timeInRow = row.cells[2].textContent.split(' to ')[0];
+
+                // 1. Uncheck the checkbox ONLY if the user is currently looking at the same date
+                if (dateInput.value === dateInRow) {
+                    const checkboxes = document.querySelectorAll('#timings-container input[type="checkbox"]');
+                    checkboxes.forEach(cb => {
+                        if (cb.dataset.timeStr === timeInRow) {
+                            cb.checked = false;
+                            cb.disabled =false;
+                        }
+                    });
+                }
+
+                // 2. Remove from your finalizedBookings array so they can book it again
+                const combo = `${roomInRow}-${dateInRow}-${timeInRow}`;
+                const index = finalizedBookings.indexOf(combo);
+                if (index > -1) {
+                    finalizedBookings.splice(index, 1);
+                }
+                // this = button, button>td
+                const rowToRemove = this.parentElement;
+                rowToRemove.remove();
+            }
+            row.append(deleteBtn)
+            tableDetailsBody.appendChild(row);
+        })
+        
+        tablePreviewBody.innerHTML = "";
+        calculatedTotalAmount = 0
+        grandTotalAmount.innerHTML = '$0.00'
+        showTimings();
+    }
+    
+    dateInput.onchange = function() {
+        // If a room type is already selected, redraw the timings
+        if (document.querySelector('input[name="roomType"]:checked')) {
+            showTimings();
+        }
+    };
+
+    // Promo code logic
+    function applyPromo(){
+        // query inside the function to ensure you have the latest rows
+        const tableBody = document.getElementById("table-preview-body");
+        const tablePreviewRows = tableBody.querySelectorAll('tr');
+
+        const promoInput = document.getElementById('promo-input').value;
+
+        tablePreviewRows.forEach(row => {
+            const rowPromoCode = row.querySelector('.row-promo-code');
+            const rowPromoPercent = row.querySelector('.row-promo-percent');
+            const rowAmount = row.querySelector('.row-amount');
+            console.log(row.dataset.promo) // to retrieve "HALF" from here: <tr data-promo="HALF">...</tr>
+            if (promoInput === row.dataset.promo){
+                rowPromoCode.textContent = row.dataset.promo;
+                rowPromoPercent.textContent = `${row.dataset.percent}%`
+                
+                calculatedTotalAmount -= +row.dataset.price;
+                let discount = (+row.dataset.price / 100) * +row.dataset.percent;
+                let finalPrice = +row.dataset.price - discount;
+                calculatedTotalAmount = calculatedTotalAmount + (finalPrice);
+
+                calculatedTotalAmount = Math.round(calculatedTotalAmount * 100) / 100
+                grandTotalAmount.textContent = '$' + calculatedTotalAmount.toFixed(2);
+                finalPrice = Math.round(finalPrice * 100) / 100;
+                rowAmount.textContent = '$' + finalPrice.toFixed(2);
+                
+                
+                row.dataset.promo = "checked"
+            }
+        })
+        promoInput.value = ""
+    }
+    
+    </script>
+
+</body>
+</html>
