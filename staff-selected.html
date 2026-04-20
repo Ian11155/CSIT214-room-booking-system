@@ -438,24 +438,26 @@
                     errorCount += 1;
                 };
 
-                if (!twoDecimalPattern.test(roomPromoPercentageValue)) {
-                    percentageAlert.style.visibility = "visible";
-                    errorCount += 1;
-                } else {
-                    percentageAlert.style.visibility = "hidden";
-                }
                 if (!roomPromoCodeValue && roomPromoPercentageValue){
                     promoCodeAlert.style.visibility = "visible";
                     errorCount += 1;
                 } else {
                     promoCodeAlert.style.visibility = "hidden";
                 }
-                    
-                if (roomPromoPercentageValue > 100 || roomPromoPercentageValue < 0 || isNaN(parseFloat(roomPromoPercentageValue))){
-                    percentageAlert.style.visibility = "visible";
-                    errorCount += 1;
-                } else {
-                    percentageAlert.style.visibility = "hidden";
+                
+                if (roomPromoCodeValue){
+                    if (roomPromoPercentageValue > 100 || roomPromoPercentageValue < 0 || isNaN(parseFloat(roomPromoPercentageValue))){
+                        percentageAlert.style.visibility = "visible";
+                        errorCount += 1;
+                    } else {
+                        percentageAlert.style.visibility = "hidden";
+                    };
+                     if (!twoDecimalPattern.test(roomPromoPercentageValue)) {
+                        percentageAlert.style.visibility = "visible";
+                        errorCount += 1;
+                    } else {
+                        percentageAlert.style.visibility = "hidden";
+                }
                 };
 
                 if (isNaN(parseFloat(roomCapacityValue))){
