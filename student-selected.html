@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Page</title>
     <script src="https://kit.fontawesome.com/f511808af3.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <style>
          #top-nav-bar{
             background-color: #001540;
@@ -248,6 +250,12 @@
             margin-right: auto;
         }
 
+        .date-field.invalid-date {
+            border: 2px solid #db0f0f;
+            background-color: #fff0f0;
+            color: #db0f0f;
+        }
+
     </style>
 </head>
 <body>
@@ -260,7 +268,7 @@
         <img id="uow-logo"src="uow2.jpg" alt="University of Wollongong Logo">
         <h2>Book a Room</h2>
         <div class="date-label">Select a date</div>
-        <input type="date" class="date-field"  onclick="this.showPicker && this.showPicker()"required>
+        <input type="date" class="date-field" >
         
         <div class="roomType-label">Select room type(s)</div>
         <div class="roomType-radio" id="roomTypeRadio" style="margin-left:40px;">
@@ -622,7 +630,28 @@
 
     // Call it immediately
     restoreState();
-    
+
+    function setDateRestrictions() {
+        // 1. Get all unique dates from your launchedRooms
+    const availableDates = [...new Set(launchedRooms.map(room => 
+        new Date(room.start).toISOString().split('T')[0]
+    ))];
+
+    // 2. Initialize Flatpickr on your .date-field
+    const fp = flatpickr(".date-field", {
+        dateFormat: "Y-m-d",
+        enable: availableDates, // This is the "Magic" - it disables everything else!
+        onChange: function(selectedDates, dateStr) {
+            // Manually trigger your timing logic when a valid date is picked
+            if (document.querySelector('input[name="roomType"]:checked')) {
+                showTimings();
+            }
+        }
+    });
+    }
+
+    // Run the function
+    setDateRestrictions();
     </script>
 
 </body>
