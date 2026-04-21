@@ -4,7 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Staff Page</title>
+    <script src="https://kit.fontawesome.com/f511808af3.js" crossorigin="anonymous"></script>
     <style>
+        #top-nav-bar{
+            background-color: #001540;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content:end;
+            padding: 0 50px;
+            width: 100%;
+            box-sizing: border-box;
+            position: fixed; /* Keeps it at the top while scrolling */
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+        #log-out{
+            color: white;
+            color: rgb(250, 250, 250);
+            text-decoration: none;
+            font-family: sans-serif;
+            font-weight: 600;
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            transition: opacity 0.2s;
+        }
+        #log-out:hover{
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
         #container1 {
             width: 600px;
             min-height: 700px;
@@ -174,6 +205,10 @@
     </style>
 </head>
 <body>
+    <div id="top-nav-bar">
+        <a id="log-out" href="booking.html"><i class="fa-solid fa-arrow-right-from-bracket"></i> log out</a>
+    </div>
+
     <div id="container1">
         <img id="uow-logo"src="uow2.jpg" alt="University of Wollongong Logo">
         <h2 id="header-create-room">Create a Room</h2>
@@ -344,7 +379,7 @@
                 roomStartTime.value = room.start.split('T')[1].substring(0, 5);
                 roomEndDate.value = room.end.split('T')[0];
                 roomEndTime.value = room.end.split('T')[1].substring(0, 5);
-                
+
                 roomPromoCode.value = room.promo;
                 roomPromoPercentage.value = room.percent;
                 roomCapacity.value = room.capacity;
