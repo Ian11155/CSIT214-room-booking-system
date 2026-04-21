@@ -73,7 +73,8 @@
             margin-left: 40px;
         }
         .date-field {
-            width: 80%;
+            display: block;
+            width: 479px;
             height: 40px;
             font-size: 12px;
             box-sizing: border-box;
@@ -250,12 +251,35 @@
             margin-right: auto;
         }
 
-        .date-field.invalid-date {
-            border: 2px solid #db0f0f;
-            background-color: #fff0f0;
-            color: #db0f0f;
+        .flatpickr-day.nextMonthDay,  .flatpickr-day.prevMonthDay{
+            color: #757575c9 !important; 
+            font-weight: 500;
+        }
+        .flatpickr-day.nextMonthDay.flatpickr-disabled, .flatpickr-day.prevMonthDay.flatpickr-disabled{
+            color: #c5c5c5f1 !important;
+            opacity: 0.3 !important;
+        }
+        .flatpickr-day.flatpickr-disabled{
+            color: #c5c5c5f1 !important;
+            opacity: 0.6 !important;
+        }
+        .flatpickr-day{
+            font-weight: 550;
+        }
+        .flatpickr-calendar.multiMonth {
+            width: 600px !important; 
         }
 
+        /* Optional: Add some spacing between the two month containers */
+        .flatpickr-months {
+            padding: 0 10px;
+        }
+
+        /* Ensure the day containers don't overlap */
+        .dayContainer {
+            width: 300px; 
+            min-width: 300px;
+        }
     </style>
 </head>
 <body>
@@ -268,7 +292,7 @@
         <img id="uow-logo"src="uow2.jpg" alt="University of Wollongong Logo">
         <h2>Book a Room</h2>
         <div class="date-label">Select a date</div>
-        <input type="date" class="date-field" >
+        <input type="text" class="date-field" >
         
         <div class="roomType-label">Select room type(s)</div>
         <div class="roomType-radio" id="roomTypeRadio" style="margin-left:40px;">
@@ -640,7 +664,9 @@
     // 2. Initialize Flatpickr on your .date-field
     const fp = flatpickr(".date-field", {
         dateFormat: "Y-m-d",
-        enable: availableDates, // This is the "Magic" - it disables everything else!
+        showMonths: 2,
+        static: true,
+        enable: availableDates,
         onChange: function(selectedDates, dateStr) {
             // Manually trigger your timing logic when a valid date is picked
             if (document.querySelector('input[name="roomType"]:checked')) {
