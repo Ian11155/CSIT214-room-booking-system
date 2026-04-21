@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Booking Details</title>
+    <script src="https://kit.fontawesome.com/f511808af3.js" crossorigin="anonymous"></script>
+    <style>
+        #top-nav-bar{
+            background-color: #001540;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 50px;
+            width: 100%;
+            box-sizing: border-box;
+            position: fixed; /* Keeps it at the top while scrolling */
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+        #log-out{
+            color: white;
+            color: rgb(250, 250, 250);
+            text-decoration: none;
+            font-family: sans-serif;
+            font-weight: 600;
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            transition: opacity 0.2s;
+        }
+        #log-out:hover{
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        #top-nav-bar a {
+            color: rgb(250, 250, 250);
+            text-decoration: none;
+            font-family: sans-serif;
+            font-weight: 600;
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            transition: opacity 0.2s;
+        }
+        #top-nav-bar a:hover{
+            text-decoration: underline;
+        }
+
+        body {
+            margin: 0;
+            background-color: #f8f9fa; /* Light gray background like the image */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 40px 0;
+        }
+
+        #container {
+            width: 950px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 28px;
+            color: #1e293b;
+            margin-bottom: 20px;
+        }
+
+        /* The Main Table Box */
+        .card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th {
+            color: #94a3b8;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: left;
+            padding: 15px 10px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        td {
+            padding: 20px 10px;
+            border-bottom: 1px solid #f8fafc;
+            font-size: 14px;
+            color: #334155;
+        }
+
+        .delete-btn {
+            background: #334155;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.2s;
+        }
+
+        .delete-btn:hover {
+            background: #ef4444; /* Turns red on hover */
+        }
+
+        /* Bottom Section inside the card */
+        .card-footer {
+            margin-top: 20px;
+            border-top: 2px solid #f1f5f9;
+            padding-top: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .total-group {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .total-label {
+            font-size: 18px;
+            color: #64748b;
+        }
+
+        #grand-total-amount {
+            font-size: 24px;
+            font-weight: 800;
+            color: #1e293b;
+        }
+
+    
+    </style>
+</head>
+<body>
+    <div id="top-nav-bar">
+        <a href="student-selected.html">Book a Room</a>
+        <a id="log-out" href="booking.html"><i class="fa-solid fa-arrow-right-from-bracket"></i> log out</a>
+    </div>
+
+    <div id="container">
+        <h1>Your booking details:</h1>
+        <div class="card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Room</th>
+                        <th>Date</th>
+                        <th>Timing</th>
+                        <th>Capacity</th>
+                        <th>Promo</th>
+                        <th>%</th>
+                        <th>Amount</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="table-summary-body">
+                    </tbody>
+            </table>
+
+            <div class="card-footer">
+                <div class="total-group">
+                    <span class="total-label">Grand Total</span>
+                    <span id="grand-total-amount">$0.00</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        const extractedData = JSON.parse(localStorage.getItem("afterPaymentBookings")) || [];
+        const tableBody = document.getElementById("table-summary-body");
+        
+        // Safety check for keys
+        let keys = extractedData.length > 0 ? Object.keys(extractedData[0]) : [];
+
+        function renderTable() {
+            tableBody.innerHTML = "";
+            
+            if (extractedData.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 40px; color: #94a3b8;">No bookings found.</td></tr>';
+                updateTotal(0);
+                return;
+            }
+
+            extractedData.forEach((row, index) => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${row[keys[0]]}</td>
+                    <td>${row[keys[1]]}</td>
+                    <td>${row[keys[2]]}</td>
+                    <td>${row[keys[3]]}</td>
+                    <td>${row[keys[4]]}</td>
+                    <td>${row[keys[5]]}</td>
+                    <td>${row[keys[6]]}</td>
+                    <td><button class="delete-btn" onclick="deleteItem(${index})">Cancel</button></td>
+                `;
+                tableBody.appendChild(tr);
+            });
+            
+            calculateTotal();
+        }
+
+        function deleteItem(index) {
+            const finalizedBookings = JSON.parse(localStorage.getItem("paidBookings")) || []; // Format: "RoomName-YYYY-MM-DD-10:00 AM"
+            const roomInRow = extractedData[index][keys[0]];
+            const dateInRow = extractedData[index][keys[1]];
+            const timeInRow = extractedData[index][keys[2]].split(' to ')[0];
+            const combo = `${roomInRow}-${dateInRow}-${timeInRow}`
+
+            const currentIndex = finalizedBookings.indexOf(combo);
+            if (currentIndex > -1) {
+                finalizedBookings.splice(currentIndex, 1); // Removes 1 item at that index
+                localStorage.setItem("paidBookings", JSON.stringify(finalizedBookings));
+                console.log("Item removed and storage updated.");
+            } else {
+                console.log("Item not found in the list.");
+            }
+
+            extractedData.splice(index, 1);
+            localStorage.setItem("afterPaymentBookings", JSON.stringify(extractedData));
+            renderTable();
+        }
+
+        function calculateTotal() {
+            let total = 0;
+            extractedData.forEach(row => {
+                const amountStr = row[keys[6]] || "0";
+                const num = parseFloat(amountStr.replace(/[^0-9.]/g, ''));
+                if (!isNaN(num)) total += num;
+            });
+            updateTotal(total);
+        }
+
+        function updateTotal(val) {
+            document.getElementById("grand-total-amount").textContent = `$${val.toFixed(2)}`;
+        }
+
+
+        // Run on load
+        renderTable();
+    </script>
+</body>
+</html>

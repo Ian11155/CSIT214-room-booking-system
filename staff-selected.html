@@ -177,7 +177,7 @@
     <div id="container1">
         <img id="uow-logo"src="uow2.jpg" alt="University of Wollongong Logo">
         <h2 id="header-create-room">Create a Room</h2>
-        <div class="input-label">Room name</div>
+        <div class="input-label">Room name (type)</div>
         <input class="input-text-box" type="text" id="new-room" />
 
         <div class="input-label">Price ($)/hr</div>
@@ -186,11 +186,17 @@
         <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4m.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2"/>
         </svg> Price must be a number.</div>
 
-        <div class="input-label">Available start date for room</div>
-        <input class="date-input" type="datetime-local" id="new-start-date" onclick="this.showPicker && this.showPicker()"required />
+        <div class="input-label">Start date</div>
+        <input class="date-input" type="date" id="new-start-date" onclick="this.showPicker && this.showPicker()" required />
 
-        <div class="input-label">Available end date for room</div>
-        <input class="date-input" type="datetime-local" id="new-end-date" onclick="this.showPicker && this.showPicker()"required />
+        <div class="input-label">End date</div>
+        <input class="date-input" type="date" id="new-end-date" onclick="this.showPicker && this.showPicker()" required />
+
+        <div class="input-label">Start time</div>
+        <input class="date-input" type="time" id="new-start-time" onclick="this.showPicker && this.showPicker()" required />
+
+        <div class="input-label">End time</div>
+        <input class="date-input" type="time" id="new-end-time" onclick="this.showPicker && this.showPicker()" required />
 
         <div class="input-label">Room promotional code</div>
         <input class="input-text-box" type="text" id="new-promo-code" />
@@ -248,6 +254,8 @@
         const roomPrice = document.getElementById("new-price");
         const roomStartDate = document.getElementById("new-start-date");
         const roomEndDate = document.getElementById("new-end-date");
+        const roomStartTime = document.getElementById("new-start-time");
+        const roomEndTime = document.getElementById("new-end-time");
         const roomPromoCode = document.getElementById("new-promo-code");
         const roomPromoPercentage = document.getElementById("new-promo-percentage");
         const roomCapacity = document.getElementById("new-capacity");
@@ -330,8 +338,13 @@
                 // 2. Pull the data back out of THIS specific li
                 roomType.value = room.roomType;
                 roomPrice.value = room.price;
-                roomStartDate.value = room.start;
-                roomEndDate.value = room.end;
+
+                // Split "2026-04-20T10:00" into ["2026-04-20", "10:00"]
+                roomStartDate.value = room.start.split('T')[0];
+                roomStartTime.value = room.start.split('T')[1].substring(0, 5);
+                roomEndDate.value = room.end.split('T')[0];
+                roomEndTime.value = room.end.split('T')[1].substring(0, 5);
+                
                 roomPromoCode.value = room.promo;
                 roomPromoPercentage.value = room.percent;
                 roomCapacity.value = room.capacity;
@@ -379,12 +392,16 @@
             const now = new Date();
             now.setMinutes(0, 0, 0); // Round down to the current hour
 
-            // Convert to the string format HTML expects
-            const isoString = now.toLocaleString('sv-SE').replace(' ', 'T').substring(0, 16);
+            const today = now.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+    
+            // Set default dates to today
+            roomStartDate.value = today;
+            roomEndDate.value = today;
 
-            roomStartDate.value = isoString;
-            roomEndDate.value = isoString;
-
+            // Set default times rounded to the hour
+            const hour = String(now.getHours()).padStart(2, '0');
+            roomStartTime.value = `${hour}:00`;
+            roomEndTime.value = `${hour}:00`;
 
             displayTableRooms();
         });
@@ -393,8 +410,10 @@
         addRoomBtn.addEventListener("click", () => {
             const roomTypeValue = roomType.value;
             const roomPriceValue = roomPrice.value;
-            const roomStartDateValue = roomStartDate.value;
-            const roomEndDateValue = roomEndDate.value;
+            const startDateValue = roomStartDate.value;
+            const endDateValue = roomEndDate.value;
+            const startTimeValue = roomStartTime.value;
+            const endTimeValue = roomEndTime.value;
             const roomPromoCodeValue = roomPromoCode.value.trim();
             const roomPromoPercentageValue = roomPromoPercentage.value;
             const roomCapacityValue = roomCapacity.value;
@@ -404,12 +423,12 @@
             const capacityAlert = document.getElementById("capacity-alert");
             const promoCodeAlert = document.getElementById("promo-code-alert");
 
-            if (roomTypeValue && roomPriceValue && roomStartDateValue && roomEndDateValue && roomCapacityValue) {
-                let currentDate = new Date(roomStartDateValue);
-                const stopDate = new Date(roomEndDateValue);
+            if (roomTypeValue && roomPriceValue && startDateValue && endDateValue && startTimeValue && endTimeValue && roomCapacityValue) {
+                let currentDate = new Date(startDateValue);
+                const stopDate = new Date(endDateValue);
                 
-                startDateTime = new Date(roomStartDateValue);
-                endDateTime = new Date(roomEndDateValue);
+                const fullStart = new Date(`${startDateValue}T${startTimeValue}`);
+                const fullEnd = new Date(`${endDateValue}T${endTimeValue}`);
 
                 let errorCount = 0;
 
@@ -428,15 +447,16 @@
                     priceAlert.style.visibility = "hidden";
                 }
                 
-                if (endDateTime.getHours() <= startDateTime.getHours()) {
-                    alert("End time must be after start time.");
-                    errorCount += 1;
-                };
+                // Validation: End must be after start
+                if (fullEnd <= fullStart) {
+                    alert("The end date and time must be after the start date and time.");
+                    errorCount++;
+                }
 
-                if (startDateTime.getMinutes() !== 0 || endDateTime.getMinutes() !== 0) {
+                if (startTimeValue.split(':')[1] !== "00" || endTimeValue.split(':')[1] !== "00") {
                     alert("Start and end times must be on the hour (e.g., 10:00, 11:00).");
-                    errorCount += 1;
-                };
+                    errorCount++;
+                }
 
                 if (!roomPromoCodeValue && roomPromoPercentageValue){
                     promoCodeAlert.style.visibility = "visible";
@@ -474,16 +494,15 @@
 
                 // Create a loop that runs as long as the current date is <= end date
                 while (currentDate <= stopDate) {
-                    const startDT = `${currentDate.getFullYear()}-${String(currentDate.getMonth()+1).padStart(2,"0")}-${String(currentDate.getDate()).padStart(2,"0")}T${String(startDateTime.getHours()).padStart(2,"0")}:${String(startDateTime.getMinutes()).padStart(2,"0")}`;
-                    const endDT = `${currentDate.getFullYear()}-${String(currentDate.getMonth()+1).padStart(2,"0")}-${String(currentDate.getDate()).padStart(2,"0")}T${String(endDateTime.getHours()).padStart(2,"0")}:${String(endDateTime.getMinutes()).padStart(2,"0")}`;
+                    const dateStr = currentDate.toISOString().split('T')[0];
 
                     // Save the room data to local storage when the add button is clicked
                     const roomData = {
                         id: roomTypeValue + '-' + `${currentDate.getFullYear()}-${String(currentDate.getMonth()+1).padStart(2,"0")}-${String(currentDate.getDate()).padStart(2,"0")}`, // Unique ID based on room type and date
                         roomType: roomTypeValue,
                         price: roomPriceValue,
-                        start: startDT,
-                        end: endDT,
+                        start: `${dateStr}T${startTimeValue}`,
+                        end: `${dateStr}T${endTimeValue}`,
                         date: `${currentDate.getFullYear()}-${String(currentDate.getMonth()+1).padStart(2,"0")}-${String(currentDate.getDate()).padStart(2,"0")}`,// Format: YYYY-MM-DD,
                         promo: roomPromoCodeValue,
                         percent: roomPromoPercentageValue,

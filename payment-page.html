@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Page</title>
+    <script src="https://kit.fontawesome.com/f511808af3.js" crossorigin="anonymous"></script>
+    <style>
+        #top-nav-bar{
+            background-color: #001540;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 50px;
+            width: 100%;
+            box-sizing: border-box;
+            position: fixed; /* Keeps it at the top while scrolling */
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+        #log-out{
+            color: white;
+            color: rgb(250, 250, 250);
+            text-decoration: none;
+            font-family: sans-serif;
+            font-weight: 600;
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            transition: opacity 0.2s;
+        }
+        #log-out:hover{
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        #top-nav-bar a {
+            color: rgb(250, 250, 250);
+            text-decoration: none;
+            font-family: sans-serif;
+            font-weight: 600;
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            transition: opacity 0.2s;
+        }
+        #top-nav-bar a:hover{
+            text-decoration: underline;
+        }
+
+        #container{
+            width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 90px;
+        }
+        #booking-summary-container h1{
+            font-size: 28px;    
+            font-family: sans-serif;
+            color: #484848;
+        }
+        #table-container-summary {
+            border-collapse: collapse;
+            border-radius: 15px;
+            margin-top: 20px;
+            min-width: 900px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            max-height: 600px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        #table-container-summary table {
+            width: 100%;
+            table-layout: fixed;
+            max-width: 1000px;
+            border-collapse: collapse;
+            font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #2D3748;
+            font-size: 13px;
+        }
+        #table-container-summary th {
+            background-color: #f2f2f2;
+            text-align: left;
+            padding: 10px;
+        }
+        #table-container-summary thead th {
+            position: sticky;
+            top: 0;               /* Sticks to the top of the container */
+            z-index: 1;           /* Stays above the body rows */
+        }
+        #table-container-summary td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-weight: 200;
+            color: #252525;
+            font-size: 14px;
+            height: 40px;
+        }
+        #table-container-summary tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .delete-btn {
+            margin: 30px 10px;
+            padding: 4px 8px;
+            background: #3f3c3c;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        #pay-btn {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 20px;
+            width: 50%;
+            height: 40px;
+            background: #000;
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+
+            position: relative; 
+            z-index: 10;
+        }
+        #pay-btn:hover {
+            background: #4a4a4a;
+            cursor: pointer;
+        }
+
+        #custom-alert {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            
+            /* Lighter green + Translucent */
+            background: rgba(84, 222, 84, 0.697); 
+            backdrop-filter: blur(5px); /* Blurs the table behind it */
+            
+            /* Floating effect */
+            padding: 12px 24px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3); 
+            
+            /* Layout */
+            display: none; 
+            align-items: center;
+            color: rgba(10, 13, 10, 0.9);
+            font-family: sans-serif;
+            font-weight: 600;
+            font-size: larger;
+        }
+        #alert-tick {
+            width: 28px;          
+            height: 28px;
+            vertical-align: middle;
+            margin-right: 8px;  
+            margin-bottom: 4px;  
+        }
+
+        #total-summary-container {
+            width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            border-top: 1px solid #cecece; 
+            margin-top: 30px; 
+        }
+        #total-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+        .total-label {
+            font-family: sans-serif;
+            color: #484848;
+            font-size: 19px;
+        }
+        #grand-total-amount {
+            margin-right: 80px;
+            font-family: sans-serif; 
+            color: #000;
+            font-weight: 700; 
+            font-size: 22px;  
+            padding-left: 20px;
+            text-align: right; 
+        }
+    </style>
+</head>
+<body>
+    <div id="top-nav-bar">
+        <a href="student-selected.html" onclick="showCurrentSelections()"><i class="fa-regular fa-circle-left"></i> BACK</a>
+        <a id="log-out" href="booking.html"><i class="fa-solid fa-arrow-right-from-bracket"></i> log out</a>
+    </div>
+
+    <div id="container">
+        <div id="booking-summary-container">
+            <h1>Booking summary:</h1>
+        </div>
+
+        <div id="table-container-summary">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Room Type</th>
+                        <th>Date</th>
+                        <th>Timing</th>
+                        <th>Capacity</th>
+                        <th>Promo code</th>
+                        <th>Promo Percentage</th>
+                        <th>Amount</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="table-summary-body">
+                </tbody>
+            </table>
+        </div>
+        <div id="total-summary-container">
+            <div id="total-line">
+                <span class="total-label">Total</span>
+                
+                <span id="grand-total-amount">$0.00</span>
+            </div>
+        </div>
+
+        <button id="pay-btn" onclick="payBtn()">Confirm Payment</button>
+        <div id="custom-alert">
+            <img src="checkmark-circle-svgrepo-com.svg" id="alert-tick">
+            Booking Confirmed! Redirecting...
+        </div>
+
+    </div>
+
+   <!--<button onclick="clearBtn()">Clear</button>
+    <button onclick="clearBtn2()">Clear2</button>-->
+
+    <script>
+        const extractedData = JSON.parse(localStorage.getItem("selectedSlots")) || []
+
+        // Append each slot booking to table before payment
+        const tableDetailsBody = document.getElementById("table-summary-body");
+        let keys = [];
+        if (extractedData.length > 0) {
+            // Look at the first object in the array to get the keys
+            keys = Object.keys(extractedData[0]); 
+            console.log("Keys:", keys); 
+        } else {
+            console.log("Storage is empty, no keys found.");
+        }
+        //index is a counter
+        extractedData.forEach((row, index) => {
+            const newRow = document.createElement("tr");
+            newRow.innerHTML = `
+            <td>${row[keys[0]]}</td>
+            <td>${row[keys[1]]}</td>
+            <td>${row[keys[2]]}</td>
+            <td>${row[keys[3]]}</td>
+            <td>${row[keys[4]]}</td>
+            <td>${row[keys[5]]}</td>
+            <td>${row[keys[6]]}</td>
+            <td class="actionCell"></td>
+            `
+            tableDetailsBody.appendChild(newRow);
+
+            const deleteBtn = document.createElement("button");
+            deleteBtn.innerHTML="Delete";
+            deleteBtn.className="delete-btn";
+            // delete from localStorage and from table
+            deleteBtn.onclick=function(){
+                extractedData.splice(index, 1)
+                localStorage.setItem("selectedSlots", JSON.stringify(extractedData));
+                newRow.remove();
+                updateTotalAmount();
+                location.reload();
+            }
+            const actionCell = newRow.querySelector(".actionCell");
+            actionCell.appendChild(deleteBtn);
+
+            tableDetailsBody.appendChild(newRow);
+
+        })
+
+        function payBtn() {
+            extractedData.forEach(row => {
+                const roomInRow = row[keys[0]]
+                const dateInRow = row[keys[1]];
+                const timeInRow = row[keys[2]].split(' to ')[0];
+
+                const paidBooking = `${roomInRow}-${dateInRow}-${timeInRow}`
+
+                let existingData = JSON.parse(localStorage.getItem('paidBookings')) || [];
+                let afterPaymentBookings = JSON.parse(localStorage.getItem('afterPaymentBookings')) || [];
+                afterPaymentBookings.push(row);
+                existingData.push(paidBooking)
+                localStorage.setItem('afterPaymentBookings', JSON.stringify(afterPaymentBookings));
+                localStorage.setItem('paidBookings', JSON.stringify(existingData));
+                })
+
+            const toast = document.getElementById('custom-alert');
+            toast.style.display = 'block';
+
+            setTimeout(() => {
+                window.location.href = "booking-details.html";
+                localStorage.removeItem("selectedSlots")
+            }, 1500);
+        }
+        // Function to dynamically calculate the sum of the cart and format it as £ 160.00 GBP
+        function updateTotalAmount() {
+            const extractedData = JSON.parse(localStorage.getItem("selectedSlots")) || [];
+            const grandTotalDisplay = document.getElementById("grand-total-amount");
+            
+            if (!grandTotalDisplay) return; // safety check
+
+            let calculatedTotal = 0;
+            if (extractedData.length > 0) {
+                extractedData.forEach(row => {
+                    // Find the amount string in the object. 
+                    // In your data structure, Amount is stored as "$4.00"
+                    const amountStr = row[keys[6]]; 
+                    
+                    // Remove the '$' and parse the number
+                    const numericAmount = parseFloat(amountStr.substring(1));
+                    if (!isNaN(numericAmount)) {
+                        calculatedTotal += numericAmount;
+                    }
+                });
+            }
+
+            // Using toFixed(2) ensures we always have two decimal points.
+            const formattedTotal = `$${calculatedTotal.toFixed(2)}`;
+            grandTotalDisplay.textContent = formattedTotal;
+        }
+
+        updateTotalAmount()
+
+        function showCurrentSelections(){
+            const newSelectedSlotsData = JSON.parse(localStorage.getItem("selectedSlots")) || [];
+            localStorage.setItem("newSelectedSlotsData", JSON.stringify(newSelectedSlotsData))
+            localStorage.removeItem("selectedSlots")
+        }
+
+        /*function clearBtn() {
+            localStorage.removeItem('selectedSlots');
+        }
+        function clearBtn2() {
+            localStorage.removeItem('paidBookings');
+        }*/
+
+
+       /* const tablePreviewBody = document.getElementById("table-preview-body");
+        const tableDetailsBody = document.getElementById("table-summary-body");
+        const rows = tablePreviewBody.querySelectorAll("tr");
+
+        // append each row individually from table-preview-body(before booking button) to table-summary-body(after booking button)
+        rows.forEach(row => {
+            const room = row.cells[0].textContent;
+            const date = row.cells[1].textContent;
+            // Extract the start time (e.g., "10:00 AM") from the timing string "10:00 AM to 11:00 AM"
+            const time = row.cells[2].textContent.split(' to ')[0];
+
+            // Store the unique combination
+            finalizedBookings.push(`${room}-${date}-${time}`);
+
+            const deleteBtn = document.createElement("button")
+            deleteBtn.innerHTML="Delete"
+            deleteBtn.className="delete-btn"
+            deleteBtn.onclick=function(){
+                const row = this.closest('tr');
+                const roomInRow = row.cells[0].textContent;
+                const dateInRow = row.cells[1].textContent;
+                const timeInRow = row.cells[2].textContent.split(' to ')[0];
+
+                // 1. Uncheck the checkbox ONLY if the user is currently looking at the same date
+                if (dateInput.value === dateInRow) {
+                    const checkboxes = document.querySelectorAll('#timings-container input[type="checkbox"]');
+                    checkboxes.forEach(cb => {
+                        if (cb.dataset.timeStr === timeInRow) {
+                            cb.checked = false;
+                            cb.disabled =false;
+                        }
+                    });
+                }
+
+                // 2. Remove from your finalizedBookings array so they can book it again
+                const combo = `${roomInRow}-${dateInRow}-${timeInRow}`;
+                const index = finalizedBookings.indexOf(combo);
+                if (index > -1) {
+                    finalizedBookings.splice(index, 1);
+                }
+                // this = button, button>td
+                const rowToRemove = this.parentElement;
+                rowToRemove.remove();
+            }
+            row.append(deleteBtn)
+            tableDetailsBody.appendChild(row);
+        })
+        
+        tablePreviewBody.innerHTML = "";
+        calculatedTotalAmount = 0
+        grandTotalAmount.innerHTML = '$0.00'
+        showTimings();
+    }*/
+    </script>
+</body>
+</html>
