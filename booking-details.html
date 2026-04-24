@@ -15,7 +15,7 @@
             padding: 0 50px;
             width: 100%;
             box-sizing: border-box;
-            position: fixed; /* Keeps it at the top while scrolling */
+            position: fixed;
             top: 0;
             left: 0;
             z-index: 1000;
@@ -51,7 +51,7 @@
 
         body {
             margin: 0;
-            background-color: #f8f9fa; /* Light gray background like the image */
+            background-color: #f8f9fa;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             padding: 40px 0;
         }
@@ -59,6 +59,7 @@
         #container {
             width: 950px;
             margin: 0 auto;
+            margin-top: 50px; /* added to clear fixed nav */
         }
 
         h1 {
@@ -67,7 +68,6 @@
             margin-bottom: 20px;
         }
 
-        /* The Main Table Box */
         .card {
             background: white;
             border-radius: 15px;
@@ -99,6 +99,7 @@
             color: #334155;
         }
 
+        /* Standard Buttons */
         .delete-btn {
             background: #334155;
             color: white;
@@ -109,12 +110,52 @@
             font-size: 12px;
             transition: background 0.2s;
         }
-
         .delete-btn:hover {
-            background: #ef4444; /* Turns red on hover */
+            background: #ef4444; 
         }
 
-        /* Bottom Section inside the card */
+        /* Modify & Save Buttons */
+        .modify-btn {
+            background: #3b82f6; 
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.2s;
+            margin-right: 5px;
+        }
+        .modify-btn:hover {
+            background: #2563eb;
+        }
+
+        .save-btn {
+            background: #10b981; 
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.2s;
+            margin-right: 5px;
+        }
+        .save-btn:hover {
+            background: #059669;
+        }
+
+        /* Dropdown style */
+        .timing-dropdown {
+            padding: 6px;
+            border-radius: 4px;
+            border: 1px solid #cbd5e1;
+            font-family: inherit;
+            font-size: 13px;
+            color: #334155;
+            outline: none;
+        }
+
         .card-footer {
             margin-top: 20px;
             border-top: 2px solid #f1f5f9;
@@ -143,10 +184,7 @@
 
         .rowRoom{
             font-size: 16px;
-            font-weight: 600;
         }
-
-    
     </style>
 </head>
 <body>
@@ -165,13 +203,12 @@
                         <th>Date</th>
                         <th>Timing</th>
                         <th>Capacity</th>
-
                         <th>Amount</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody id="table-summary-body">
-                    </tbody>
+                </tbody>
             </table>
 
             <div class="card-footer">
@@ -205,11 +242,13 @@
                 tr.innerHTML = `
                     <td class="rowRoom">${row[keys[0]]}</td>
                     <td>${row[keys[1]]}</td>
-                    <td>${row[keys[2]]}</td>
-                    <td><i class="fa-solid fa-user-group"></i>${row[keys[3]]}</td>
-                    
+                    <td class="timing-cell">${row[keys[2]]}</td>
+                    <td><i class="fa-solid fa-user-group"></i> ${row[keys[3]]}</td>
                     <td>${row[keys[6]]}</td>
-                    <td><button class="delete-btn" onclick="deleteItem(${index})">Cancel</button></td>
+                    <td class="action-cell">
+                        <button class="modify-btn" onclick="modifyItem(${index})">Modify</button>
+                        <button class="delete-btn" onclick="deleteItem(${index})">Cancel</button>
+                    </td>
                 `;
                 tableBody.appendChild(tr);
             });
@@ -218,25 +257,108 @@
         }
 
         function deleteItem(index) {
-            const finalizedBookings = JSON.parse(localStorage.getItem("paidBookings")) || []; // Format: "RoomName-YYYY-MM-DD-10:00 AM"
+            const finalizedBookings = JSON.parse(localStorage.getItem("paidBookings")) || []; 
             const roomInRow = extractedData[index][keys[0]];
             const dateInRow = extractedData[index][keys[1]];
             const timeInRow = extractedData[index][keys[2]].split(' to ')[0];
-            const combo = `${roomInRow}-${dateInRow}-${timeInRow}`
+            const combo = `${roomInRow}-${dateInRow}-${timeInRow}`;
 
             const currentIndex = finalizedBookings.indexOf(combo);
             if (currentIndex > -1) {
-                finalizedBookings.splice(currentIndex, 1); // Removes 1 item at that index
+                finalizedBookings.splice(currentIndex, 1); 
                 localStorage.setItem("paidBookings", JSON.stringify(finalizedBookings));
-                console.log("Item removed and storage updated.");
-            } else {
-                console.log("Item not found in the list.");
-            }
+            } 
 
             extractedData.splice(index, 1);
             localStorage.setItem("afterPaymentBookings", JSON.stringify(extractedData));
             renderTable();
         }
+
+        // --- NEW LOGIC: Modify the Timing Dropdown ---
+        function modifyItem(index) {
+            const rowData = extractedData[index];
+            const roomName = rowData[keys[0]];
+            const date = rowData[keys[1]];
+            const currentTiming = rowData[keys[2]];
+            const currentStartTime = currentTiming.split(' to ')[0];
+
+            // 1. Fetch original room rules from staff page data to find boundaries
+            const launchedRooms = JSON.parse(localStorage.getItem('selectedRoom')) || [];
+            const roomObj = launchedRooms.find(r => r.roomType === roomName);
+
+            if (!roomObj) {
+                alert("Room configuration not found. Cannot modify timing.");
+                return;
+            }
+
+            const startDateTime = new Date(roomObj.start);
+            const endDateTime = new Date(roomObj.end);
+            const finalizedBookings = JSON.parse(localStorage.getItem("paidBookings")) || [];
+
+            // 2. Generate options for the dropdown
+            let optionsHTML = '';
+            for (let time = new Date(startDateTime); time < endDateTime; time.setHours(time.getHours() + 1)) {
+                const formattedTime = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                
+                const nextHour = new Date(time);
+                nextHour.setHours(nextHour.getHours() + 1);
+                const formattedNextHour = nextHour.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                
+                const timeRange = `${formattedTime} to ${formattedNextHour}`;
+                const combo = `${roomName}-${date}-${formattedTime}`;
+
+                // Disable if booked by someone else (but keep enabled if it's the current active slot)
+                if (finalizedBookings.includes(combo) && formattedTime !== currentStartTime) {
+                    optionsHTML += `<option value="${timeRange}" disabled>${timeRange} (Booked)</option>`;
+                } else {
+                    const selected = (formattedTime === currentStartTime) ? "selected" : "";
+                    optionsHTML += `<option value="${timeRange}" ${selected}>${timeRange}</option>`;
+                }
+            }
+
+            // 3. Swap the HTML in the row
+            const tr = tableBody.children[index];
+            const timingCell = tr.querySelector('.timing-cell');
+            const actionCell = tr.querySelector('.action-cell');
+
+            timingCell.innerHTML = `<select id="modify-select-${index}" class="timing-dropdown">${optionsHTML}</select>`;
+            
+            actionCell.innerHTML = `
+                <button class="save-btn" onclick="saveItem(${index}, '${currentStartTime}')">Save</button>
+                <button class="delete-btn" onclick="renderTable()">Back</button>
+            `;
+        }
+
+        function saveItem(index, oldStartTime) {
+            const selectEl = document.getElementById(`modify-select-${index}`);
+            const newTiming = selectEl.value;
+            const newStartTime = newTiming.split(' to ')[0];
+
+            const rowData = extractedData[index];
+            const roomName = rowData[keys[0]];
+            const date = rowData[keys[1]];
+
+            // 1. Update `paidBookings` (The combo lock array)
+            let finalizedBookings = JSON.parse(localStorage.getItem("paidBookings")) || [];
+            const oldCombo = `${roomName}-${date}-${oldStartTime}`;
+            const newCombo = `${roomName}-${date}-${newStartTime}`;
+
+            const comboIndex = finalizedBookings.indexOf(oldCombo);
+            if (comboIndex > -1) {
+                finalizedBookings[comboIndex] = newCombo; // Swap the lock
+            } else {
+                finalizedBookings.push(newCombo); // Fallback
+            }
+            localStorage.setItem("paidBookings", JSON.stringify(finalizedBookings));
+
+            // 2. Update `afterPaymentBookings` (The table data array)
+            extractedData[index][keys[2]] = newTiming;
+            localStorage.setItem("afterPaymentBookings", JSON.stringify(extractedData));
+
+            // 3. Re-render the UI
+            renderTable();
+        }
+        // ---------------------------------------------
 
         function calculateTotal() {
             let total = 0;
@@ -251,7 +373,6 @@
         function updateTotal(val) {
             document.getElementById("grand-total-amount").textContent = `$${val.toFixed(2)}`;
         }
-
 
         // Run on load
         renderTable();
