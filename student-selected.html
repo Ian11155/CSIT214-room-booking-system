@@ -89,9 +89,9 @@
         }
         .roomType-radio {
             min-height: 100px;
-            max-height: 100px;   
+            max-height: 240px;   
             overflow-y: auto;
-            border: 1px solid #ccc;
+            margin-bottom: 10px;
             border-radius: 6px;
             padding: 4px;
             background: #fff;
@@ -99,18 +99,70 @@
             margin-left: 40px;
             box-sizing: border-box;
         }
-        #timings-container {
-            min-height: 100px;
-            max-height: 100px;   
-            overflow-y: auto;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            padding: 4px;
-            background: #fff;
-            width: 80%;
-            margin-left: 40px;
-            box-sizing: border-box;
+
+        .titles{
+            font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            font-weight: 600;
+            color: #5d5d5d;
         }
+
+        /* Hide the actual radio circle */
+        .room-option input[type="radio"] {
+            display: none;
+        }
+        /* The container for each room option */
+        .room-option {
+            display: flex;
+            align-items: center;
+            background-color: #f4f4f4; /* Light grey background */
+            margin-bottom: -5px;
+            padding: 12px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+        /* Hover and selection states */
+        .room-option:hover {
+            background-color: #ececec;
+        }
+
+        .room-option:has(input[type="radio"]:checked) {
+            background-color: #e8f0fe;
+            border-color: #001540;
+        }
+
+        /* Text and spacing */
+        .room-name {
+            flex-grow: 1; /* Pushes price/capacity to the right */
+            font-weight: 600;
+            font-family: sans-serif;
+            color: #333;
+            margin-left: 10px;
+        }
+
+        .room-meta {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        /* Style for Capacity and Price pills */
+        .badge {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-family: sans-serif;
+        }
+
+        .badge-price {
+            background: #001540;
+            color: #fff;
+        }
+
         .timings-label{
             margin-left: 40px;
         }
@@ -157,7 +209,7 @@
         }
         .table-container-preview {
             width: 900px;
-            margin: 20px auto;
+            margin: 100px auto;
             height: 350px;
             overflow-y: scroll;
         }
@@ -280,6 +332,86 @@
             width: 300px; 
             min-width: 300px;
         }
+
+        .previewRows .fa-user-group{
+            color: #183878;
+        }
+
+        #payment-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        /* Container for the timings grid */
+        #timings-container {
+            display: grid;
+            height: 200px;
+            overflow-y: auto;
+            /* This is the magic line. It forces 3 equal columns always. */
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 12px;
+            padding: 15px;
+            width: 80%;
+            margin-left: 40px;
+            margin-top: 10px;
+            box-sizing: border-box;
+            /* Ensure the container doesn't shrinkwrap its content */
+            align-items: start;
+        }
+
+        /* Hide the actual checkbox */
+        #timings-container input[type="checkbox"] {
+            display: none;
+        }
+
+        /* The clickable box (The Label) */
+        #timings-container label {
+            /* flex ensures the content inside the box is centered */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 2px 10px 30px rgba(0, 0, 0, 0.05);
+        
+        /* width: 100% makes the label fill the 1fr column width */
+        width: 100%;
+        /* fixed height ensures vertical consistency */
+        height: 48px; 
+        
+        border: 1px solid #444;
+        border-radius: 6px;
+        color: #424242;
+        font-family: 'Noto Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        box-sizing: border-box;
+        transition: all 0.2s ease;
+        }
+
+        #timings-container label:hover {
+            background-color: #7c7a76;
+            color: #eceff4;
+        }
+        #timings-container label:active{
+            transform: scale(0.96);
+            transition: transform 0.1s;
+        }
+
+        /* Style for when the checkbox is checked */
+        #timings-container input[type="checkbox"]:checked + label {
+            background-color: #3e3d3d;
+            color: #eceff4;
+            border-color: #bfa15f;
+        }
+
+        /* Style for disabled/booked slots */
+        #timings-container input[type="checkbox"]:disabled + label {
+            opacity: 0.3;
+            cursor: not-allowed;
+            border-color: #020202;
+        }
+        
     </style>
 </head>
 <body>
@@ -291,15 +423,15 @@
     <div class="container1">
         <img id="uow-logo"src="uow2.jpg" alt="University of Wollongong Logo">
         <h2>Book a Room</h2>
-        <div class="date-label">Select a date</div>
+        <div class="date-label titles">Select a date</div>
         <input type="text" class="date-field" >
         
-        <div class="roomType-label">Select room type(s)</div>
+        <div class="roomType-label titles">Select room type(s)</div>
         <div class="roomType-radio" id="roomTypeRadio" style="margin-left:40px;">
         </div>
 
         <br>
-        <div class="timings-label">Timing(s)</div>
+        <div class="timings-label titles">Timing(s)</div>
         <div id=timings-container>
 
         </div>
@@ -314,8 +446,8 @@
                     <th>Date</th>
                     <th>Timing</th>
                     <th>Capacity</th>
-                    <th>Promo code</th>
-                    <th>Promo Percentage</th>
+                    <th>Promo</th>
+
                     <th>Amount</th>
                 </tr>
             </thead>
@@ -375,9 +507,12 @@
  
         // Create checkbox for every hour between start and end time
         for (let time = startDateTime; time < endDateTime; time.setHours(time.getHours() + 1)) {
+            const timeId = `time-${time.getTime()}`; // Unique ID for label connection
+
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
             checkbox.name = 'timing';
+            checkbox.id = timeId; // Connect label to checkbox
             // Store the formatted time directly ON the element
             const formattedTime = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); //format:16:00
             checkbox.dataset.timeStr = formattedTime;
@@ -388,7 +523,8 @@
             checkbox.value = time.toISOString();
             // Create label for the checkbox
             const label = document.createElement('label');
-            label.textContent = " " + formattedTime;
+            label.setAttribute('for', timeId);
+            label.textContent = ` ${formattedTime} - ${formattedNextHour}`;
             // When a timing checkbox is clicked, add the booking details to the booking price list
             const roomName = selectedRoomType.value;
             
@@ -413,7 +549,7 @@
                     row.cells[2].textContent === timeRange
                 );
             }
-            label.textContent = " " + formattedTime;
+            label.textContent = ` ${formattedTime} - ${formattedNextHour}`;
             
             checkbox.onclick = function() {
                 const selectedRoomType = document.querySelector('input[name="roomType"]:checked');
@@ -441,6 +577,8 @@
 
                             calculatedTotalAmount = Math.round(calculatedTotalAmount * 100) / 100
                             grandTotalAmount.innerHTML = '$' + calculatedTotalAmount.toFixed(2);
+
+                            togglePaymentButton()
                         }
                     }
                     return;
@@ -451,13 +589,13 @@
                 tableRow.dataset.promo = promo ? promo : '-' //example output: <tr data-promo="HALF">...</tr>
                 tableRow.dataset.percent = percent ? percent : '-'
                 tableRow.dataset.price = price
+                tableRow.className = "previewRows";
                 tableRow.innerHTML = `
                     <td>${roomName}</td>
                     <td>${dateInput.value}</td>
                     <td>${formattedTime} to ${formattedNextHour}</td>
-                    <td>${capacity} pax</td>
+                    <td><i class="fa-solid fa-user-group"></i>&nbsp${capacity}</td>
                     <td class="row-promo-code">-</td>
-                    <td class="row-promo-percent">-%</td>
                     <td class="row-amount">$${(+price).toFixed(2)}</td>
                     `
                 tableBody.appendChild(tableRow);
@@ -467,14 +605,16 @@
 
                 calculatedTotalAmount = Math.round(calculatedTotalAmount * 100) / 100
                 grandTotalAmount.innerHTML = '$' + calculatedTotalAmount.toFixed(2);
+
+                togglePaymentButton()
+
             };
 
             
             // Append the checkbox and label to the timings container
             timingsContainer.appendChild(checkbox);
             timingsContainer.appendChild(label);
-            const br = document.createElement('br');
-            timingsContainer.appendChild(br);
+            
         }
     }
 
@@ -485,6 +625,7 @@
 
     for (let i = 0; i < launchedRooms.length; i++) {
         const currentType = launchedRooms[i].roomType;
+        const currentRoom = launchedRooms[i];
 
         // 2. Check if we have already seen this room type
         if (addedTypes.has(currentType)) {
@@ -493,6 +634,10 @@
         
         // 3. Add this type to our "seen" list so we don't add it again
         addedTypes.add(currentType);
+
+        // Create the wrapper label
+        const wrapper = document.createElement('label');
+        wrapper.className = 'room-option';
 
         // Create radio button for each launched room
         const radio = document.createElement('input');
@@ -507,10 +652,17 @@
         radio.dataset.promo = launchedRooms[i].promo;
         radio.dataset.percent = launchedRooms[i].percent;
         radio.dataset.capacity = launchedRooms[i].capacity;
-        // Create label for the radio button
-        const label = document.createElement('label');
-        label.htmlFor = launchedRooms[i].roomType;
-        label.textContent = " " + launchedRooms[i].roomType;
+        // Create inner HTML for Name, Capacity, and Price
+        wrapper.innerHTML = `
+            <div class="room-name">${currentRoom.roomType}</div>
+            <div class="room-meta">
+                <span class="badge badge-capacity"><i class="fa-solid fa-user-group"></i>Up to ${currentRoom.capacity}</span>
+                <span class="badge badge-price">$${parseFloat(currentRoom.price).toFixed(2)} / hr</span>
+            </div>
+        `;
+
+        // Prepend the radio button so it appears on the left
+        wrapper.prepend(radio);
         // onclick for radio button to show timings
         radio.onclick = function() {
             if (dateInput.value) {
@@ -521,8 +673,8 @@
             }
         };
         // Append the radio button and label to the container
-        radioContainer.appendChild(radio);
-        radioContainer.appendChild(label);
+        
+        radioContainer.appendChild(wrapper);
         // Add a line break before each new radio button
         const br = document.createElement('br');
         radioContainer.appendChild(br);
@@ -542,14 +694,25 @@
         const rows = tablePreviewBody.querySelectorAll("tr");
 
         rows.forEach(row => {
+            const promoCell = row.cells[4]; // The Promo Code cell
+            let promoCode = "-";
+            let promoPercent = "-";
+
+            // Check if a promo was actually applied to this row
+            if (promoCell.dataset.codePercent) {
+                const data = promoCell.dataset.codePercent.split(',');
+                promoCode = data[0];    // "HALF"
+                promoPercent = data[1]; // "50"
+            }
+
             const selectedSlots = {
                 room: row.cells[0].textContent,
                 date: row.cells[1].textContent,
                 timing: row.cells[2].textContent,
                 capacity: row.cells[3].textContent,
-                promo: row.cells[4].textContent,
-                percentage: row.cells[5].textContent,
-                amount: row.cells[6].textContent,
+                promo: promoCode,
+                percentage: `${promoPercent}%`,
+                amount: row.cells[5].textContent,
             }
 
             let existingData = JSON.parse(localStorage.getItem('selectedSlots')) || [];
@@ -582,8 +745,9 @@
             const rowAmount = row.querySelector('.row-amount');
             console.log(row.dataset.promo) // to retrieve "HALF" from here: <tr data-promo="HALF">...</tr>
             if (promoInput === row.dataset.promo){
-                rowPromoCode.textContent = row.dataset.promo;
-                rowPromoPercent.textContent = `${row.dataset.percent}%`
+                rowPromoCode.innerHTML = `<i class="fa-regular fa-circle-check"></i>    Promo applied: ${row.dataset.percent}% OFF`;
+                rowPromoCode.style.color = "#4e8a6d"
+                rowPromoCode.dataset.codePercent = `${row.dataset.promo},${row.dataset.percent}`
                 
                 calculatedTotalAmount -= +row.dataset.price;
                 let discount = (+row.dataset.price / 100) * +row.dataset.percent;
@@ -610,6 +774,7 @@
         
         savedData.forEach(item => {
             const tableRow = document.createElement("tr");
+            tableRow.className = "previewRows"
             
             // We need to find the original price/promo from launchedRooms to keep datasets accurate
             const originalRoom = launchedRooms.find(r => r.roomType === item.room);
@@ -617,16 +782,34 @@
             tableRow.dataset.promo = originalRoom ? originalRoom.promo : '-';
             tableRow.dataset.percent = originalRoom ? originalRoom.percent : '-';
             tableRow.dataset.price = originalRoom ? originalRoom.price : '0';
+            let updatedPromoLine = "-"; 
+            let applyGreenStyle = false;
+
+            // Clean up percentage (remove potential "undefined%" strings)
+            const cleanPercentage = item.percentage ? item.percentage.replace('%', '') : "-";
+
+            if (item.percentage && item.percentage !== "-%" && item.percentage !== "undefined%") {
+                updatedPromoLine = `<i class="fa-regular fa-circle-check"></i> Promo applied: ${item.percentage} OFF`;
+                applyGreenStyle = true;
+            }
+
+            // Clean up capacity (remove the "Up to" or icon text if it was accidentally saved)
+            const cleanCapacity = item.capacity.replace(/[^\d]/g, '');
 
             tableRow.innerHTML = `
                 <td>${item.room}</td>
                 <td>${item.date}</td>
                 <td>${item.timing}</td>
-                <td>${item.capacity}</td>
-                <td class="row-promo-code">${item.promo}</td>
-                <td class="row-promo-percent">${item.percentage}</td>
+                <td><i class="fa-solid fa-user-group"></i>${item.capacity}</td>
+                <td class="row-promo-code">${updatedPromoLine}</td>
                 <td class="row-amount">${item.amount}</td>
             `;
+            if (applyGreenStyle) {
+                const rowPromoCode = tableRow.querySelector('.row-promo-code');
+                rowPromoCode.style.color = "#4e8a6d";
+                rowPromoCode.dataset.codePercent = `${item.promo},${cleanPercentage}`;
+            }
+
             tableBody.appendChild(tableRow);
 
             // Update the global running total
@@ -650,6 +833,8 @@
 
         // Clean up so it doesn't double-load if they refresh
         localStorage.removeItem("newSelectedSlotsData");
+
+        togglePaymentButton()
     }
 
     // Call it immediately
@@ -664,6 +849,7 @@
     // 2. Initialize Flatpickr on your .date-field
     const fp = flatpickr(".date-field", {
         dateFormat: "Y-m-d",
+        defaultDate: "today",
         showMonths: 2,
         static: true,
         enable: availableDates,
@@ -675,6 +861,13 @@
         }
     });
     }
+
+    function togglePaymentButton() {
+        const tableBody = document.getElementById("table-preview-body");
+        const payBtn = document.getElementById("payment-btn");
+        payBtn.disabled = tableBody.children.length === 0;
+    }
+    togglePaymentButton()
 
     // Run the function
     setDateRestrictions();

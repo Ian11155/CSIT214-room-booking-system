@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
+    <script src="https://kit.fontawesome.com/f511808af3.js" crossorigin="anonymous"></script>
     <style>
          .left-panel {
             width: 40vw;
@@ -32,6 +33,32 @@
             display: flex;
             justify-content: center;  
             align-items: center; 
+        }
+        
+        #incorrectAlert{
+            display: none; 
+            align-items: center;
+            gap: 20px;
+            background: #fff;
+            border-left: 5px solid #df1043; 
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-radius: 4px;
+            
+            /* Typography matching image_158b27.png */
+            font-family: 'Noto Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            color: #4f4f4f; /* Specific IKEA dark gray */
+            font-size: 1.1rem;
+            line-height: 1.5; /* Creates the gap below each sentence */
+            font-weight: 400;
+            
+            max-width: 500px;
+            margin-bottom: 25px;
+            box-sizing: border-box;
+        }
+        .fa-ban{
+            color: #df1043;
+            font-size: 30px;
         }
         .inner-box {
             width: 75%;
@@ -97,11 +124,15 @@
     <div class="right-panel">
         <div class="inner-box">
             <h1>Please enter your username and password.</h1>
+            <div id="incorrectAlert">
+                <div><i class="fa-solid fa-ban"></i></div>
+                <span>The email address or password you entered is incorrect, or the account does not exist in UOW</span>
+            </div>
             <br/>
             <div>Username</div>
-            <input class="text-field" type="text" required>
+            <input class="text-field" id="username-field" type="text" required>
             <div>Password</div>
-            <input class="password-field" type="password" required>
+            <input class="password-field" id="password-field" type="password" required>
             <div>Login As</div>
             <select class="role-field" id="role-field">
                 <option value="" disabled selected></option>
@@ -115,10 +146,34 @@
     <script>
         document.getElementById("continue-btn").onclick = function() {
             const role = document.getElementById("role-field").value;
+            const username = document.getElementById("username-field").value
+
+            const usernameField = document.getElementById("username-field")
+            const passwordField = document.getElementById("password-field")
+            const usernameAlert = document.getElementById("incorrectAlert")
+            usernameAlert.style.display = "none"
             if (role === "student") {
-                window.location.href = "student-selected.html";
+                if(username !== "Student1234" || passwordField.value !== "password"){
+                    setTimeout(() => {
+                        usernameAlert.style.display = "flex";
+                    }, 100);
+                    usernameField.value = "";
+                    passwordField.value = "";
+                    return;
+                } else{
+                    window.location.href = "student-selected.html";
+                }
             } else if (role === "staff") {
+                 if(username !== "Staff666@" || passwordField.value !== "password"){
+                    setTimeout(() => {
+                        usernameAlert.style.display = "flex";
+                    },100);
+                    usernameField.value = "";
+                    passwordField.value = "";
+                    return;
+                } else{
                 window.location.href = "staff-selected.html";
+                }
             } else {
                 alert("Please select a role.");
             }

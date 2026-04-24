@@ -160,10 +160,14 @@
             /* Layout */
             display: none; 
             align-items: center;
+            justify-content: center;
+            text-align: center;
             color: rgba(10, 13, 10, 0.9);
             font-family: sans-serif;
             font-weight: 600;
-            font-size: larger;
+            font-size: 23px;
+            width: 500px;
+            height: 45px;
         }
         #alert-tick {
             width: 28px;          
@@ -200,6 +204,36 @@
             padding-left: 20px;
             text-align: right; 
         }
+
+        #table-summary-body .rowOthers{
+            font-size: 15px;
+            font-weight: 550;
+            font-family:Arial, Helvetica, sans-serif;
+            color: #555555;
+        }
+         #table-summary-body .roomName{
+            font-size: 18px;
+            font-weight: 600;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #1a1a1a;
+         }
+
+         #table-container-summary th:nth-child(1),
+        #table-container-summary td:nth-child(1) {
+            width: 20%; /* Increase this percentage as needed */
+            white-space: normal; /* Allows the name to wrap to a second line if it's still too long */
+            word-wrap: break-word; /* Prevents long words from overflowing */
+        }
+
+        .fa-user-group{
+            color: #183878;
+        }
+
+        #pay-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
     </style>
 </head>
 <body>
@@ -221,8 +255,6 @@
                         <th>Date</th>
                         <th>Timing</th>
                         <th>Capacity</th>
-                        <th>Promo code</th>
-                        <th>Promo Percentage</th>
                         <th>Amount</th>
                         <th>Actions</th>
                     </tr>
@@ -267,13 +299,11 @@
         extractedData.forEach((row, index) => {
             const newRow = document.createElement("tr");
             newRow.innerHTML = `
-            <td>${row[keys[0]]}</td>
-            <td>${row[keys[1]]}</td>
-            <td>${row[keys[2]]}</td>
-            <td>${row[keys[3]]}</td>
-            <td>${row[keys[4]]}</td>
-            <td>${row[keys[5]]}</td>
-            <td>${row[keys[6]]}</td>
+            <td class="roomName">${row[keys[0]]}</td>
+            <td class="rowOthers">${row[keys[1]]}</td>
+            <td  class="rowOthers">${row[keys[2]]}</td>
+            <td  class="rowOthers"><i class="fa-solid fa-user-group"></i>${row[keys[3]]}</td>
+            <td  class="rowOthers">${row[keys[6]]}</td>
             <td class="actionCell"></td>
             `
             tableDetailsBody.appendChild(newRow);
@@ -355,67 +385,13 @@
             localStorage.removeItem("selectedSlots")
         }
 
-        /*function clearBtn() {
-            localStorage.removeItem('selectedSlots');
+        function togglePaymentButton() {
+            const tableBody = document.getElementById("table-summary-body");
+            const payBtn = document.getElementById("pay-btn");
+            payBtn.disabled = tableBody.children.length === 0;
         }
-        function clearBtn2() {
-            localStorage.removeItem('paidBookings');
-        }*/
-
-
-       /* const tablePreviewBody = document.getElementById("table-preview-body");
-        const tableDetailsBody = document.getElementById("table-summary-body");
-        const rows = tablePreviewBody.querySelectorAll("tr");
-
-        // append each row individually from table-preview-body(before booking button) to table-summary-body(after booking button)
-        rows.forEach(row => {
-            const room = row.cells[0].textContent;
-            const date = row.cells[1].textContent;
-            // Extract the start time (e.g., "10:00 AM") from the timing string "10:00 AM to 11:00 AM"
-            const time = row.cells[2].textContent.split(' to ')[0];
-
-            // Store the unique combination
-            finalizedBookings.push(`${room}-${date}-${time}`);
-
-            const deleteBtn = document.createElement("button")
-            deleteBtn.innerHTML="Delete"
-            deleteBtn.className="delete-btn"
-            deleteBtn.onclick=function(){
-                const row = this.closest('tr');
-                const roomInRow = row.cells[0].textContent;
-                const dateInRow = row.cells[1].textContent;
-                const timeInRow = row.cells[2].textContent.split(' to ')[0];
-
-                // 1. Uncheck the checkbox ONLY if the user is currently looking at the same date
-                if (dateInput.value === dateInRow) {
-                    const checkboxes = document.querySelectorAll('#timings-container input[type="checkbox"]');
-                    checkboxes.forEach(cb => {
-                        if (cb.dataset.timeStr === timeInRow) {
-                            cb.checked = false;
-                            cb.disabled =false;
-                        }
-                    });
-                }
-
-                // 2. Remove from your finalizedBookings array so they can book it again
-                const combo = `${roomInRow}-${dateInRow}-${timeInRow}`;
-                const index = finalizedBookings.indexOf(combo);
-                if (index > -1) {
-                    finalizedBookings.splice(index, 1);
-                }
-                // this = button, button>td
-                const rowToRemove = this.parentElement;
-                rowToRemove.remove();
-            }
-            row.append(deleteBtn)
-            tableDetailsBody.appendChild(row);
-        })
-        
-        tablePreviewBody.innerHTML = "";
-        calculatedTotalAmount = 0
-        grandTotalAmount.innerHTML = '$0.00'
-        showTimings();
-    }*/
+        togglePaymentButton()
+    
     </script>
 </body>
 </html>

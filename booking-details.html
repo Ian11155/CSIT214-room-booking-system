@@ -141,6 +141,11 @@
             color: #1e293b;
         }
 
+        .rowRoom{
+            font-size: 16px;
+            font-weight: 600;
+        }
+
     
     </style>
 </head>
@@ -160,8 +165,7 @@
                         <th>Date</th>
                         <th>Timing</th>
                         <th>Capacity</th>
-                        <th>Promo</th>
-                        <th>%</th>
+
                         <th>Amount</th>
                         <th>Action</th>
                     </tr>
@@ -172,7 +176,7 @@
 
             <div class="card-footer">
                 <div class="total-group">
-                    <span class="total-label">Grand Total</span>
+                    <span class="total-label">Total Paid</span>
                     <span id="grand-total-amount">$0.00</span>
                 </div>
             </div>
@@ -199,12 +203,11 @@
             extractedData.forEach((row, index) => {
                 const tr = document.createElement("tr");
                 tr.innerHTML = `
-                    <td>${row[keys[0]]}</td>
+                    <td class="rowRoom">${row[keys[0]]}</td>
                     <td>${row[keys[1]]}</td>
                     <td>${row[keys[2]]}</td>
-                    <td>${row[keys[3]]}</td>
-                    <td>${row[keys[4]]}</td>
-                    <td>${row[keys[5]]}</td>
+                    <td><i class="fa-solid fa-user-group"></i>${row[keys[3]]}</td>
+                    
                     <td>${row[keys[6]]}</td>
                     <td><button class="delete-btn" onclick="deleteItem(${index})">Cancel</button></td>
                 `;
