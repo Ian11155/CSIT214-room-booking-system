@@ -474,15 +474,21 @@
     <!-- JavaScript -->
     <script>
     // stored format:
-    /*const roomData ={
-                        roomType: listItem.dataset.roomType,
-                        price: listItem.dataset.price,
-                        start: listItem.dataset.start,
-                        end: listItem.dataset.end,
-                        promo: listItem.dataset.promo,
-                        percent: listItem.dataset.percent,
-                        capacity: listItem.dataset.capacity
-                      };
+    /*const roomData = {
+                        id: roomTypeValue + '-' + `${currentDate.getFullYear()}-${String(currentDate.getMonth()+1).padStart(2,"0")}-${String(currentDate.getDate()).padStart(2,"0")}`, // Unique ID based on room type and date
+                        roomType: roomTypeValue,
+                        price: roomPriceValue,
+                        start: `${dateStr}T${startTimeValue}`,
+                        end: `${dateStr}T${endTimeValue}`,
+                        date: `${currentDate.getFullYear()}-${String(currentDate.getMonth()+1).padStart(2,"0")}-${String(currentDate.getDate()).padStart(2,"0")}`,// Format: YYYY-MM-DD,
+                        promo: roomPromoCodeValue,
+                        percent: roomPromoPercentageValue,
+                        capacity: roomCapacityValue,
+                        promoPercent: roomPromoCodeValue + ',' + roomPromoPercentageValue,
+                    };
+                    let existingData = JSON.parse(localStorage.getItem('selectedRoom')) || [];
+                    existingData.push(roomData);
+                    localStorage.setItem('selectedRoom', JSON.stringify(existingData));
     */
     const dateInput = document.querySelector('.date-field');
     const launchedRooms = JSON.parse(localStorage.getItem('selectedRoom')) || [];
@@ -617,67 +623,73 @@
             
         }
     }
+    function loadRoomsForDate(selectedDate) {
+        // On page load, read the launched rooms from localStorage and create checkboxes for them
+        const radioContainer = document.getElementById('roomTypeRadio');
 
-    // On page load, read the launched rooms from localStorage and create checkboxes for them
-    const radioContainer = document.getElementById('roomTypeRadio');
-    // 1. Create a Set to track room types we have already added, *Set automatically removes duplicates for us*
-    const addedTypes = new Set();
+        radioContainer.innerHTML = '';
+        // 1. Create a Set to track room types we have already added, *Set automatically removes duplicates for us*
+        const addedTypes = new Set();
 
-    for (let i = 0; i < launchedRooms.length; i++) {
-        const currentType = launchedRooms[i].roomType;
-        const currentRoom = launchedRooms[i];
+        for (let i = 0; i < launchedRooms.length; i++) {
+            const roomDate = launchedRooms[i].start.split('T')[0];
+            if (roomDate === selectedDate) {
+                const currentType = launchedRooms[i].roomType;
+                const currentRoom = launchedRooms[i];
 
-        // 2. Check if we have already seen this room type
-        if (addedTypes.has(currentType)) {
-            continue; // Skip to the next room in the loop
-        }
-        
-        // 3. Add this type to our "seen" list so we don't add it again
-        addedTypes.add(currentType);
+                // 2. Check if we have already seen this room type
+                if (addedTypes.has(currentType)) {
+                    continue; // Skip to the next room in the loop
+                }
+            
+                // 3. Add this type to our "seen" list so we don't add it again
+                addedTypes.add(currentType);
 
-        // Create the wrapper label
-        const wrapper = document.createElement('label');
-        wrapper.className = 'room-option';
+                // Create the wrapper label
+                const wrapper = document.createElement('label');
+                wrapper.className = 'room-option';
 
-        // Create radio button for each launched room
-        const radio = document.createElement('input');
-        radio.type = 'radio';
-        radio.name = 'roomType';
-        radio.value = launchedRooms[i].roomType;
-        radio.id = launchedRooms[i].roomType;
-        // Store additional data as dataset attributes
-        radio.dataset.start = launchedRooms[i].start;
-        radio.dataset.end = launchedRooms[i].end;
-        radio.dataset.price = launchedRooms[i].price;
-        radio.dataset.promo = launchedRooms[i].promo;
-        radio.dataset.percent = launchedRooms[i].percent;
-        radio.dataset.capacity = launchedRooms[i].capacity;
-        // Create inner HTML for Name, Capacity, and Price
-        wrapper.innerHTML = `
-            <div class="room-name">${currentRoom.roomType}</div>
-            <div class="room-meta">
-                <span class="badge badge-capacity"><i class="fa-solid fa-user-group"></i>Up to ${currentRoom.capacity}</span>
-                <span class="badge badge-price">$${parseFloat(currentRoom.price).toFixed(2)} / hr</span>
-            </div>
-        `;
+                // Create radio button for each launched room
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'roomType';
+                radio.value = launchedRooms[i].roomType;
+                radio.id = launchedRooms[i].roomType;
+                // Store additional data as dataset attributes
+                radio.dataset.start = launchedRooms[i].start;
+                radio.dataset.end = launchedRooms[i].end;
+                radio.dataset.price = launchedRooms[i].price;
+                radio.dataset.promo = launchedRooms[i].promo;
+                radio.dataset.percent = launchedRooms[i].percent;
+                radio.dataset.capacity = launchedRooms[i].capacity;
+                // Create inner HTML for Name, Capacity, and Price
+                wrapper.innerHTML = `
+                    <div class="room-name">${currentRoom.roomType}</div>
+                    <div class="room-meta">
+                        <span class="badge badge-capacity"><i class="fa-solid fa-user-group"></i>Up to ${currentRoom.capacity}</span>
+                        <span class="badge badge-price">$${parseFloat(currentRoom.price).toFixed(2)} / hr</span>
+                    </div>
+                `;
 
-        // Prepend the radio button so it appears on the left
-        wrapper.prepend(radio);
-        // onclick for radio button to show timings
-        radio.onclick = function() {
-            if (dateInput.value) {
-                showTimings();
-            } else {
-                alert('Please select a date first to view available timings for this room type.');
-                radio.checked = false; // Uncheck the radio button since no date is selected
+                // Prepend the radio button so it appears on the left
+                wrapper.prepend(radio);
+                // onclick for radio button to show timings
+                radio.onclick = function() {
+                    if (dateInput.value) {
+                        showTimings();
+                    } else {
+                        alert('Please select a date first to view available timings for this room type.');
+                        radio.checked = false; // Uncheck the radio button since no date is selected
+                    }
+                };
+                // Append the radio button and label to the container
+                
+                radioContainer.appendChild(wrapper);
+                // Add a line break before each new radio button
+                const br = document.createElement('br');
+                radioContainer.appendChild(br);
             }
-        };
-        // Append the radio button and label to the container
-        
-        radioContainer.appendChild(wrapper);
-        // Add a line break before each new radio button
-        const br = document.createElement('br');
-        radioContainer.appendChild(br);
+        }
     }
 
     // Listens for any changes to localStorage made by your Staff page.
@@ -744,7 +756,7 @@
             const rowPromoPercent = row.querySelector('.row-promo-percent');
             const rowAmount = row.querySelector('.row-amount');
             console.log(row.dataset.promo) // to retrieve "HALF" from here: <tr data-promo="HALF">...</tr>
-            if (promoInput === row.dataset.promo){
+            if (promoInput === row.dataset.promo && rowPromoCode.innerHTML === '-'){
                 rowPromoCode.innerHTML = `<i class="fa-regular fa-circle-check"></i>    Promo applied: ${row.dataset.percent}% OFF`;
                 rowPromoCode.style.color = "#4e8a6d"
                 rowPromoCode.dataset.codePercent = `${row.dataset.promo},${row.dataset.percent}`
@@ -853,7 +865,15 @@
         showMonths: 2,
         static: true,
         enable: availableDates,
+        
+        // forces the rooms to load the second Flatpickr boots up
+        onReady: function(selectedDates, dateStr) {
+            loadRoomsForDate(dateStr); 
+        },
         onChange: function(selectedDates, dateStr) {
+            // Trigger the new function with the newly selected date
+            loadRoomsForDate(dateStr); 
+
             // Manually trigger your timing logic when a valid date is picked
             if (document.querySelector('input[name="roomType"]:checked')) {
                 showTimings();
