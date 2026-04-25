@@ -452,7 +452,12 @@
                 roomStartDate.value = room.start.split('T')[0];
                 roomStartTime.value = room.start.split('T')[1].substring(0, 5);
                 roomEndDate.value = room.end.split('T')[0];
-                roomEndTime.value = room.end.split('T')[1].substring(0, 5);
+
+                let modifyEndTime = room.end.split('T')[1].substring(0, 5);
+                if (modifyEndTime === "23:59") {
+                    modifyEndTime = "00:00"; // Converts back to 12:00 AM for the input display
+                }
+                roomEndTime.value = modifyEndTime;
 
                 roomPromoCode.value = room.promo;
                 roomPromoPercentage.value = room.percent;
@@ -535,7 +540,10 @@
             const startDateValue = roomStartDate.value;
             const endDateValue = roomEndDate.value;
             const startTimeValue = roomStartTime.value;
-            const endTimeValue = roomEndTime.value;
+            let endTimeValue = roomEndTime.value;
+            if (endTimeValue === "00:00") {
+                endTimeValue = "23:59";
+            }
             const roomPromoCodeValue = roomPromoCode.value.trim();
             const roomPromoPercentageValue = roomPromoPercentage.value;
             const roomCapacityValue = roomCapacity.value;
@@ -575,7 +583,7 @@
                     errorCount++;
                 }
 
-                if (startTimeValue.split(':')[1] !== "00" || endTimeValue.split(':')[1] !== "00") {
+                if (startTimeValue.split(':')[1] !== "00" || endTimeValue.split(':')[1] !== "00" && endTimeValue !== "23:59") {
                     alert("Start and end times must be on the hour (e.g., 10:00, 11:00).");
                     errorCount++;
                 }
