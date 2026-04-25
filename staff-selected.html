@@ -226,7 +226,7 @@
             background-color: #5f5f5fa6;
         }
 
-        /* Container3 */
+        /* Container3 clearBTN*/
         #container3{
             margin-left: 230px;
             margin-bottom: 150px;
@@ -239,7 +239,8 @@
             cursor: pointer;
         }
         #container3 button:hover{
-            background-color: #5f5f5fa6;
+            background-color: #f80000f1;
+            border: 1px solid #f80000f1;
         }
 
         .roomTypeColumn{
@@ -734,6 +735,7 @@
     function clearBtn() {
         localStorage.removeItem('draftRoom');
         localStorage.removeItem('selectedRoom');
+        localStorage.clear();
         tableBody.innerHTML = ""; // Clear the displayed table of rooms
         updateDropDownOptions([]); // Reset dropdowns
     }
