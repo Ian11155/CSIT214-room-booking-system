@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Page</title>
+    <link rel="icon" type="image/png" href="uow.jpg">
     <script src="https://kit.fontawesome.com/f511808af3.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -209,7 +210,7 @@
         }
         .table-container-preview {
             width: 900px;
-            margin: 100px auto;
+            margin: 40px auto;
             height: 350px;
             overflow-y: scroll;
         }
@@ -346,7 +347,8 @@
         /* Container for the timings grid */
         #timings-container {
             display: grid;
-            height: 200px;
+            min-height: 0;
+            max-height: 200px;
             overflow-y: auto;
             /* This is the magic line. It forces 3 equal columns always. */
             grid-template-columns: repeat(3, 1fr); 
@@ -869,10 +871,14 @@
         // forces the rooms to load the second Flatpickr boots up
         onReady: function(selectedDates, dateStr) {
             loadRoomsForDate(dateStr); 
+            // Clear the timings grid on initial load
+            document.getElementById('timings-container').innerHTML = '';
         },
         onChange: function(selectedDates, dateStr) {
             // Trigger the new function with the newly selected date
-            loadRoomsForDate(dateStr); 
+            loadRoomsForDate(dateStr);
+            // Clear the timings grid on initial load
+            document.getElementById('timings-container').innerHTML = ''; 
 
             // Manually trigger your timing logic when a valid date is picked
             if (document.querySelector('input[name="roomType"]:checked')) {

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="uow.jpg">
     <title>Staff Page</title>
     <script src="https://kit.fontawesome.com/f511808af3.js" crossorigin="anonymous"></script>
     <style>
@@ -36,23 +37,34 @@
             cursor: pointer;
         }
 
-        #container1 {
+        #container1, #container-launch {
             width: 600px;
-            min-height: 700px;
             margin-top: 60px;
             margin-left: auto;
             margin-right: auto;
+        }
+        #container1 {
+            min-height: 700px;
+        }
+        #container-launch {
+            margin-top: 20px;
+            padding: 20px 0;
+            border-top: 1px solid #ccc;
         }
         #uow-logo {
             width: 200px;
             height: 150px;
         }
-        #container1 h2 {
+        h2 {
             color: #484848;
             font-size: 28px;    
             font-family: sans-serif;
             margin-left: 40px;
             margin-top: -30px;
+        }
+        #container-launch h2 {
+            margin-top: 0;
+            font-size: 24px;
         }
         .input-label, label {
             margin-left: 40px;
@@ -67,8 +79,9 @@
             margin-bottom: 20px;
             margin-left: 40px;
             cursor: pointer;
+            box-shadow: inset -0.6px -0.5px 0 #9a9999;
         }
-        .input-text-box {
+        .input-text-box, .select-box {
             width: 80%;
             height: 40px;
             font-size: 16px;
@@ -77,6 +90,7 @@
             border: 1px solid #ccc;
             margin-bottom: 20px;
             margin-left: 40px;
+            
         }
         #percentage-alert, #price-alert, #capacity-alert, #promo-code-alert{
             display: flex;          /* Enables Flexbox */
@@ -91,29 +105,45 @@
             margin-bottom: 10px;
         }
         
-        #add-room-btn {
+        #add-room-btn, #launch-btn {
             margin-left: 40px;
             margin-top: 10px;
             width: 80%;
             height: 45px;
-            background: #000;
-            color: #fff;
             border: none;
             border-radius: 20px;
             font-size: 18px;
             cursor: pointer;
+            font-weight: 600;
+        }
+        #add-room-btn{
+            background: #fff;
+            color: #000;
+            border: 1px solid #000;
         }
         #add-room-btn:hover{
-            background-color: #343434;
+            border: 2px solid #000;
         }
         #add-room-btn:active{
+            background-color: #ececec;
+            transform: scale(0.94);
+        }
+        #launch-btn{
+            background: #000;
+            color: #fff;
+        }
+        #launch-btn:hover {
+            background-color: #343434;
+        }
+        #launch-btn:active {
             background-color: #000;
             transform: scale(0.94);
         }
         #filter-container {
             margin-top: 70px;
             border-radius: 7px;
-            
+            width: 600px;
+            margin: 55px auto -20px auto;
         }
         #room-filter-dropdown {
             width: 80%;
@@ -170,6 +200,16 @@
         tr:hover {
             background-color: #f9f9f9;
         }
+        .status-launched {
+            color: #3bd670;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        .status-draft {
+            color: rgb(255, 217, 0);
+            font-weight: bold;
+            font-size: 12px;
+        }
         .delete-btn, .modify-btn {
             font-family: Verdana, Geneva, Tahoma, sans-serif;
             font-size: smaller;
@@ -202,6 +242,10 @@
             background-color: #5f5f5fa6;
         }
 
+        .roomTypeColumn{
+            font-weight: 900;
+        }
+
     </style>
 </head>
 <body>
@@ -211,7 +255,7 @@
 
     <div id="container1">
         <img id="uow-logo"src="uow2.jpg" alt="University of Wollongong Logo">
-        <h2 id="header-create-room">Create a Room</h2>
+        <h2 id="header-create-room">Create a Room (Draft)</h2>
         <div class="input-label">Room name (type)</div>
         <input class="input-text-box" type="text" id="new-room" />
 
@@ -250,26 +294,41 @@
         <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4m.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2"/>
         </svg> Capacity must be a number.</div>
         
-        <button id="add-room-btn">Add Room</button>
-
-        <div id="filter-container">
-            <label for="room-filter-dropdown">Filter by Room Type: </label>
-            <select id="room-filter-dropdown">
-                <option value="all">Show All</option>
-            </select>
-        </div>
+        <button id="add-room-btn">Add Draft Room</button>
 
     </div>
 
+    <div id="container-launch">
+        <h2>Launch Draft Rooms</h2>
+        <div class="input-label">Room Type</div>
+        <select class="select-box" id="launch-room-type">
+            <option value="" disabled selected>Select a room type...</option>
+        </select>
+        <div class="input-label">From Date</div>
+        <input class="date-input" type="date" id="launch-from-date" onclick="this.showPicker && this.showPicker()" />
+        <div class="input-label">To Date</div>
+        <input class="date-input" type="date" id="launch-to-date" onclick="this.showPicker && this.showPicker()" />
+        
+        <button id="launch-btn">Launch Selected</button>
+    </div>
+
+    <div id="filter-container">
+        <label for="room-filter-dropdown">Filter by Room Type: </label>
+        <select id="room-filter-dropdown">
+            <option value="all">Show All</option>
+        </select>
+    </div>
+    
     <div id="table-container">
         <table>
             <thead>
                 <tr>
-                    <th>Room Type</th>
+                    <th style="width: 100px;">Status</th>
+                    <th style="width: 130px;">Room Type</th>
                     <th>Price ($)/hr</th>
                     <th>Start</th>
                     <th>End</th>
-                    <th>Date</th>
+                    <th style="width: 140px;">Date</th>
                     <th>Promo code</th>
                     <th>Promo Percentage</th>
                     <th>Capacity</th>
@@ -284,6 +343,7 @@
     <div id="container3">
         <button id="clearBtn" onclick="clearBtn()">Clear all</button>
     </div>
+
     <script>
         const roomType = document.getElementById("new-room");
         const roomPrice = document.getElementById("new-price");
@@ -298,18 +358,15 @@
         const tableBody = document.getElementById("table-body");
 
         const dropdownMenu = document.getElementById('room-filter-dropdown');
+        const launchDropdownMenu = document.getElementById('launch-room-type');
 
-        //display the room data in the table item
+        //display the draft room data in the table item
         function displayTableRooms(){
             tableBody.innerHTML = ""; // Clear the table before displaying updated data
-            let existingData2 = JSON.parse(localStorage.getItem('selectedRoom')) || [];
+            let existingData2 = JSON.parse(localStorage.getItem('draftRoom')) || [];
 
             // sort by date
             existingData2.sort((a, b) => {
-                // This converts the date strings(2026-04-15) into numerical timestamp value(1776211200000) for comparison
-                // Math: 1776211200000 (A) - 1775779200000 (B)
-                // Result: +432,000,000 (Positive)
-                // Action: Because it's positive, Room B (the smaller number/earlier date) is moved to the front.
                 return new Date(a.date) - new Date(b.date);
             });
             // Update dropdown options based on room types in local storage
@@ -320,8 +377,12 @@
             existingData2.forEach(room => {
                 if ( room.roomType === selectedFilter || selectedFilter === "all") {
                     const tableRow = document.createElement("tr");
+                    const statusText = room.launched ? '<i class="fa-solid fa-circle"></i> Live' : '<i class="fa-solid fa-circle"></i> Draft';
+                    const statusClass = room.launched ? 'status-launched' : 'status-draft';
+
                     tableRow.innerHTML = `
-                        <td>${room.roomType}</td>
+                        <td class="${statusClass}">${statusText}</td>
+                        <td class="roomTypeColumn">${room.roomType}</td>
                         <td>$${room.price}</td>
                         <td>${room.start.slice(11, 16)}</td>
                         <td>${room.end.slice(11, 16)}</td>
@@ -346,20 +407,32 @@
         // Function to update dropdown options based on room types in local storage
         function updateDropDownOptions(existingData2) {
             const currentSelection = dropdownMenu.value; // Store current selection
+            const currentLaunchSelection = launchDropdownMenu.value;
             const roomtypes = [...new Set(existingData2.map(room=>room.roomType))]; // Get unique room types from local storage
 
-            // Reset dropdown (keep the "Show All" option)
+            // Reset dropdowns
             dropdownMenu.innerHTML = '<option value="all">Show All</option>';
+            launchDropdownMenu.innerHTML = '<option value="" disabled selected>Select a room type...</option>';
 
             roomtypes.forEach(type => {
-                const newOptions = document.createElement('option');
-                newOptions.value = type;
-                newOptions.textContent = type;
-                dropdownMenu.appendChild(newOptions);
+                // For filter dropdown
+                const newFilterOption = document.createElement('option');
+                newFilterOption.value = type;
+                newFilterOption.textContent = type;
+                dropdownMenu.appendChild(newFilterOption);
+
+                // For launch dropdown
+                const newLaunchOption = document.createElement('option');
+                newLaunchOption.value = type;
+                newLaunchOption.textContent = type;
+                launchDropdownMenu.appendChild(newLaunchOption);
             });
 
             // Put the selection back
             dropdownMenu.value = currentSelection;
+            if (roomtypes.includes(currentLaunchSelection)) {
+                launchDropdownMenu.value = currentLaunchSelection;
+            }
         }
         dropdownMenu.addEventListener("change", displayTableRooms);
 
@@ -386,15 +459,19 @@
 
                 // Remove the row item from row
                 tableRow.remove()
-                // Also remove the corresponding item from local storage if it exists
-                let existingData = JSON.parse(localStorage.getItem('selectedRoom')) || [];
+                // Also remove the corresponding item from local storage draftRoom if it exists
+                let existingData = JSON.parse(localStorage.getItem('draftRoom')) || [];
                 for (let i = 0; i < existingData.length; i++) {
                     if (existingData[i].id === room.id) {
                         existingData.splice(i, 1); // Remove the item from the array
                         break;
                     }
                 }
-                localStorage.setItem('selectedRoom', JSON.stringify(existingData)); // Update local storage
+                localStorage.setItem('draftRoom', JSON.stringify(existingData)); // Update local storage
+
+                // Re-sync selectedRoom if a launched room was modified
+                syncSelectedRooms(existingData);
+
                 const target = document.getElementById('header-create-room');
                 target.scrollIntoView({ behavior: 'smooth' });
             };
@@ -409,17 +486,26 @@
             deleteBtn.onclick = function() {
                 // Remove the table item from table
                 tableRow.remove()
-                // Also remove the corresponding item from local storage if it exists
-                let existingData = JSON.parse(localStorage.getItem('selectedRoom')) || [];
+                // Also remove the corresponding item from local storage draftRoom if it exists
+                let existingData = JSON.parse(localStorage.getItem('draftRoom')) || [];
                 for (let i = 0; i < existingData.length; i++) {
                     if (existingData[i].id === roomId) {
                         existingData.splice(i, 1); // Remove the item from the array
                         break;
                     }
                 }
-                localStorage.setItem('selectedRoom', JSON.stringify(existingData)); // Update local storage
+                localStorage.setItem('draftRoom', JSON.stringify(existingData)); // Update local storage
+                
+                // Re-sync selectedRoom
+                syncSelectedRooms(existingData);
             };
             actionCell.appendChild(deleteBtn);
+        }
+
+        // Helper function to sync launched rooms to selectedRoom localStorage
+        function syncSelectedRooms(draftData) {
+            const launchedRooms = draftData.filter(room => room.launched === true);
+            localStorage.setItem('selectedRoom', JSON.stringify(launchedRooms));
         }
 
         // Function to round down the current time to the nearest hour and set it as the default value for the datetime-local inputs
@@ -500,20 +586,19 @@
                     promoCodeAlert.style.visibility = "hidden";
                 }
                 
-                if (roomPromoCodeValue){
-                    if (roomPromoPercentageValue > 100 || roomPromoPercentageValue < 0 || isNaN(parseFloat(roomPromoPercentageValue))){
+                const wholeNumberPattern = /^\d+$/; // Checks for digits only (no decimals, letters, or symbols)
+                if (roomPromoCodeValue) {
+                    if (
+                        roomPromoPercentageValue > 100 || 
+                        roomPromoPercentageValue < 0 || 
+                        !wholeNumberPattern.test(roomPromoPercentageValue) // Fails if it has decimals or isn't a number
+                    ) {
                         percentageAlert.style.visibility = "visible";
                         errorCount += 1;
                     } else {
                         percentageAlert.style.visibility = "hidden";
-                    };
-                     if (!twoDecimalPattern.test(roomPromoPercentageValue)) {
-                        percentageAlert.style.visibility = "visible";
-                        errorCount += 1;
-                    } else {
-                        percentageAlert.style.visibility = "hidden";
+                    }
                 }
-                };
 
                 if (isNaN(parseFloat(roomCapacityValue))){
                     capacityAlert.style.visibility = "visible";
@@ -526,6 +611,7 @@
                     return;
                 };
 
+                let existingData = JSON.parse(localStorage.getItem('draftRoom')) || [];
 
                 // Create a loop that runs as long as the current date is <= end date
                 while (currentDate <= stopDate) {
@@ -543,14 +629,22 @@
                         percent: roomPromoPercentageValue,
                         capacity: roomCapacityValue,
                         promoPercent: roomPromoCodeValue + ',' + roomPromoPercentageValue,
+                        launched: false // Default to false when drafted
                     };
-                    let existingData = JSON.parse(localStorage.getItem('selectedRoom')) || [];
-                    existingData.push(roomData);
-                    localStorage.setItem('selectedRoom', JSON.stringify(existingData));
+                    
+                    // Update if exists or push
+                    const existingIndex = existingData.findIndex(r => r.id === roomData.id);
+                    if (existingIndex > -1) {
+                        existingData[existingIndex] = roomData;
+                    } else {
+                        existingData.push(roomData);
+                    }
 
                     currentDate.setDate(currentDate.getDate() + 1); // Increment the current date by 1 day
                 }
 
+                localStorage.setItem('draftRoom', JSON.stringify(existingData));
+                syncSelectedRooms(existingData); // Keep selectedRoom in sync just in case
                 displayTableRooms();
 
                 // Clear input fields after adding the room
@@ -562,18 +656,88 @@
                 roomPromoPercentage.value = "";
                 roomCapacity.value = "";
 
+                addRoomBtn.innerHTML = `<i class="fa-solid fa-check"></i>   Added`;
+                setTimeout(() => {
+                    // 2. Change to spinner after 1.3 seconds
+                    addRoomBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+                    
+                    setTimeout(() => {
+                        // 3. Reset to default text after another 1 second
+                        addRoomBtn.innerHTML = 'Add Draft Room';
+                    }, 600); 
+
+                }, 800);
             } else {
                 alert("Please fill in all required fields (Room Type, Price, Start Date, End Date, Capacity).");
             }
+        });
 
+        // Launch logic
+        launchBtn = document.getElementById('launch-btn')
+        document.getElementById('launch-btn').addEventListener('click', () => {
+            const selectedType = launchDropdownMenu.value;
+            const fromDateStr = document.getElementById('launch-from-date').value;
+            const toDateStr = document.getElementById('launch-to-date').value;
+
+            if (!selectedType || !fromDateStr || !toDateStr) {
+                alert("Please select a room type and specify both From and To dates.");
+                return;
+            }
+
+            const fromDate = new Date(fromDateStr);
+            const toDate = new Date(toDateStr);
+            
+            if (toDate < fromDate) {
+                alert("To Date must be after or equal to From Date.");
+                return;
+            }
+
+            let drafts = JSON.parse(localStorage.getItem('draftRoom')) || [];
+            let launchedCount = 0;
+
+            drafts.forEach(room => {
+                const roomDate = new Date(room.date);
+                if (room.roomType === selectedType && roomDate >= fromDate && roomDate <= toDate) {
+                    room.launched = true;
+                    launchedCount++;
+                }
+            });
+
+            if (launchedCount > 0) {
+                // Save updated drafts
+                localStorage.setItem('draftRoom', JSON.stringify(drafts));
+                // Extract only launched rooms into selectedRoom
+                syncSelectedRooms(drafts);
+                // Refresh table
+                displayTableRooms();
+
+                // ADD THIS LINE HERE: Scroll down to the table
+                document.getElementById('table-container').scrollIntoView({ behavior: 'smooth' });
+                
+                launchBtn.innerHTML = `<i class="fa-solid fa-check"></i>   Successfully launched ${launchedCount} room(s)!`;
+                setTimeout(() => {
+                    // 2. Change to spinner after 1.3 seconds
+                    launchBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>`;
+                    
+                    setTimeout(() => {
+                        // 3. Reset to default text after another 1 second
+                        launchBtn.innerHTML = 'Launch Selected';
+                    }, 600); 
+
+                }, 1600);
+            } else {
+                alert("No matching draft rooms found for the selected type and date range.");
+            }
         });
     
     // Function to clear local storage and all displayed rooms
     function clearBtn() {
-        localStorage.clear();
+        localStorage.removeItem('draftRoom');
+        localStorage.removeItem('selectedRoom');
         tableBody.innerHTML = ""; // Clear the displayed table of rooms
+        updateDropDownOptions([]); // Reset dropdowns
     }
 
     </script>
 </body>
-</html> 
+</html>

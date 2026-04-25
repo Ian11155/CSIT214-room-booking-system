@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
+    <link rel="icon" type="image/png" href="uow.jpg">
     <script src="https://kit.fontawesome.com/f511808af3.js" crossorigin="anonymous"></script>
     <style>
          .left-panel {
@@ -73,7 +74,7 @@
         .text-field {
             width: 80%;
             height: 40px;
-            font-size: 18px;
+            font-size: 15px;
             padding: 8px;
             box-sizing: border-box;
             border-radius: 6px;
@@ -83,7 +84,7 @@
         .password-field {
             width: 80%;
             height: 40px;
-            font-size: 18px;
+            font-size: 15px;
             padding: 8px;
             box-sizing: border-box;
             border-radius: 6px;
@@ -126,7 +127,7 @@
             <h1>Please enter your username and password.</h1>
             <div id="incorrectAlert">
                 <div><i class="fa-solid fa-ban"></i></div>
-                <span>The email address or password you entered is incorrect, or the account does not exist in UOW</span>
+                <span>The email address or password you entered is incorrect.</span>
             </div>
             <br/>
             <div>Username</div>
@@ -153,7 +154,7 @@
             const usernameAlert = document.getElementById("incorrectAlert")
             usernameAlert.style.display = "none"
             if (role === "student") {
-                if(username !== "Student1234" || passwordField.value !== "password"){
+                if(username !== "Student1234@gmail.com" || passwordField.value !== "Pass666."){
                     setTimeout(() => {
                         usernameAlert.style.display = "flex";
                     }, 100);
@@ -164,7 +165,7 @@
                     window.location.href = "student-selected.html";
                 }
             } else if (role === "staff") {
-                 if(username !== "Staff666@" || passwordField.value !== "password"){
+                 if(username !== "Staff666@uow.com" || passwordField.value !== "staff12345."){
                     setTimeout(() => {
                         usernameAlert.style.display = "flex";
                     },100);
