@@ -707,8 +707,10 @@
             drafts.forEach(room => {
                 const roomDate = new Date(room.date);
                 if (room.roomType === selectedType && roomDate >= fromDate && roomDate <= toDate) {
-                    room.launched = true;
-                    launchedCount++;
+                    if (room.launched !== true){
+                        room.launched = true;
+                        launchedCount++;
+                    }
                 }
             });
 
