@@ -145,40 +145,62 @@
         </div>
     </div>
     <script>
-        document.getElementById("continue-btn").onclick = function() {
+        document.getElementById("continue-btn").onclick = async function() {
+            // 1. Get the values the user typed in
             const role = document.getElementById("role-field").value;
-            const username = document.getElementById("username-field").value
+            const username = document.getElementById("username-field").value;
+            const password = document.getElementById("password-field").value;
+            const alertBox = document.getElementById("incorrectAlert");
 
-            const usernameField = document.getElementById("username-field")
-            const passwordField = document.getElementById("password-field")
-            const usernameAlert = document.getElementById("incorrectAlert")
-            usernameAlert.style.display = "none"
-            if (role === "student") {
-                if(username !== "Student1234@gmail.com" || passwordField.value !== "Pass666."){
-                    setTimeout(() => {
-                        usernameAlert.style.display = "flex";
-                    }, 100);
-                    usernameField.value = "";
-                    passwordField.value = "";
-                    return;
-                } else{
-                    window.location.href = "student-selected.html";
+            // Hide alert box at the start
+            alertBox.style.display = "none";
+
+            if (!role) {
+                alert("Please select a role.");
+                return;
+            }
+
+            // 2. Load the CSV file
+            const response = await fetch('accounts.csv');
+            const csvText = await response.text();
+            
+            // 3. Break the CSV text into rows
+            const rows = csvText.split('\n');
+            
+            let loginSuccessful = false;
+
+            // 4. Loop through each row (starting at 1 to skip the header)
+            for (let i = 1; i < rows.length; i++) {
+                // Skip empty rows
+                if (rows[i].trim() === "") continue; 
+
+                // Break the row into columns based on the comma
+                const columns = rows[i].split(',');
+                const csvRole = columns[0].trim();
+                const csvUsername = columns[1].trim();
+                const csvPassword = columns[2].trim();
+
+                // 5. Check if everything matches
+                if (role === csvRole && username === csvUsername && password === csvPassword) {
+                    loginSuccessful = true;
+                    break; // Stop looking, we found a match!
                 }
-            } else if (role === "staff") {
-                 if(username !== "Staff666@uow.com" || passwordField.value !== "staff12345."){
-                    setTimeout(() => {
-                        usernameAlert.style.display = "flex";
-                    },100);
-                    usernameField.value = "";
-                    passwordField.value = "";
-                    return;
-                } else{
-                window.location.href = "staff-selected.html";
+            }
+
+            // 6. Direct the user based on the result
+            if (loginSuccessful === true) {
+                if (role === "student") {
+                    window.location.href = "student-selected.html";
+                } else if (role === "staff") {
+                    window.location.href = "staff-selected.html";
                 }
             } else {
-                alert("Please select a role.");
+                // Show error
+                alertBox.style.display = "flex";
+                document.getElementById("username-field").value = "";
+                document.getElementById("password-field").value = "";
             }
         };
-</script>
+    </script>
 </body>
 </html>
