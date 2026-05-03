@@ -127,7 +127,7 @@
             <h1>Please enter your username and password.</h1>
             <div id="incorrectAlert">
                 <div><i class="fa-solid fa-ban"></i></div>
-                <span>The email address or password you entered is incorrect.</span>
+                <span id="alertMessage">The email address or password you entered is incorrect.</span>
             </div>
             <br/>
             <div>Username</div>
@@ -149,14 +149,45 @@
             // 1. Get the values the user typed in
             const role = document.getElementById("role-field").value;
             const username = document.getElementById("username-field").value;
+            const usernameBox = document.getElementById("username-field");
+            const passwordBox = document.getElementById("password-field");
             const password = document.getElementById("password-field").value;
             const alertBox = document.getElementById("incorrectAlert");
+            const alertMessage = document.getElementById("alertMessage");
 
             // Hide alert box at the start
             alertBox.style.display = "none";
+            // Reset borders just in case they were previously red
+            usernameBox.style.borderColor = "";
+            passwordBox.style.borderColor = "";
+
+            function alerting(){
+                setTimeout(() => {
+                    alertBox.style.display = "flex";
+                    alertMessage.innerHTML="<span>Please enter username and password.</span>"
+                },200);
+            };
+
+            if(!username && !password){
+                usernameBox.style.borderColor = "red";
+                passwordBox.style.borderColor = "red";
+                alerting()
+                return;
+            }
+            if(!username){
+                usernameBox.style.borderColor = "red";
+                alerting()
+                return;
+            }
+            if(!password){
+                passwordBox.style.borderColor = "red";
+                alerting()
+                return;
+            }
 
             if (!role) {
-                alert("Please select a role.");
+                alertMessage.innerHTML="<span>Please select a role.</span>"
+                alertBox.style.display = "flex";
                 return;
             }
 
@@ -196,6 +227,7 @@
                 }
             } else {
                 // Show error
+                alertMessage.innerHTML="<span>The email address or password you entered is incorrect.</span>"
                 alertBox.style.display = "flex";
                 document.getElementById("username-field").value = "";
                 document.getElementById("password-field").value = "";

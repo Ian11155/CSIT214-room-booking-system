@@ -210,7 +210,7 @@
         }
         .table-container-preview {
             width: 900px;
-            margin: 40px auto;
+            margin: 70px auto;
             height: 350px;
             overflow-y: scroll;
         }
@@ -571,15 +571,21 @@
                     const tableBody = document.getElementById("table-preview-body")
                     // search the table and remove the row if all check true
                     for (let i = 0; i < tableBody.children.length; i++) {
+                        const row = tableBody.children[i];
                         if (tableBody.children[i].textContent.includes(formattedTime) && tableBody.children[i].textContent.includes(formattedNextHour) && tableBody.children[i].textContent.includes(roomName)) {
-                            tableBody.children[i].remove();
                             // minus price for total amount
-                            if (!percent){
-                                calculatedTotalAmount -= +price
-                            } else{
-                                let calculatedDiscount = (+price / 100) * +percent;
+                            const promoCell = row.querySelector('.row-promo-code');
+                
+                            if (promoCell && promoCell.dataset.codePercent) {
+                                // Extract the percentage that was actually applied
+                                const appliedData = promoCell.dataset.codePercent.split(',');
+                                const appliedPercent = parseFloat(appliedData[1]);
+                                
+                                let calculatedDiscount = (price / 100) * appliedPercent;
                                 let finalPrice = +price - calculatedDiscount;
                                 calculatedTotalAmount -= finalPrice;
+                            } else{
+                                calculatedTotalAmount -= +price
                             };
                             if (calculatedTotalAmount < 0) calculatedTotalAmount = 0;
 
@@ -587,6 +593,9 @@
                             grandTotalAmount.innerHTML = '$' + calculatedTotalAmount.toFixed(2);
 
                             togglePaymentButton()
+                            tableBody.children[i].remove();
+
+                            break;
                         }
                     }
                     return;
